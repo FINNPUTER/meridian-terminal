@@ -702,7 +702,27 @@ const FNG_API     = 'https://api.alternative.me/fng/?limit=1';
 const FX_API      = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
 const CG_GLOBAL   = 'https://api.coingecko.com/api/v3/global';
 const TOPO_URL    = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
-const yf          = s => `https://corsproxy.io/?${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1d')}`;
+const yfUrl    = s => 'https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1d';
+const yfProxies= [
+  s => PROXY_URL ? `${PROXY_URL}/proxy?url=${encodeURIComponent(yfUrl(s))}` : null,
+  s => `https://corsproxy.io/?${encodeURIComponent(yfUrl(s))}`,
+  s => `https://api.allorigins.win/raw?url=${encodeURIComponent(yfUrl(s))}`,
+  s => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yfUrl(s))}`,
+  s => `https://corsproxy.org/?${encodeURIComponent(yfUrl(s))}`,
+].filter(Boolean);
+async function yf(s){
+  for(const mkUrl of yfProxies){
+    const url=mkUrl(s);
+    if(!url)continue;
+    try{
+      const r=await fetch(url,{signal:AbortSignal.timeout(8000)});
+      if(!r.ok)continue;
+      const d=await r.json();
+      if(d?.chart?.result?.[0]?.meta)return d;
+    }catch{}
+  }
+  throw new Error('All YF proxies failed');
+}
 const rss2j       = u => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(u)}`;
 const allori      = u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`;
 
@@ -1102,7 +1122,7 @@ async function fetchGlobal(){
 let _idat={};
 async function fetchIndices(){
   const results=await Promise.allSettled(YF_SYMS.map(s=>
-    fetch(yf(s.s),{signal:AbortSignal.timeout(9000)}).then(r=>r.json()).then(d=>{
+    yf(s.s).then(d=>{
       const m=d?.chart?.result?.[0]?.meta;
       if(m?.regularMarketPrice){const p=m.regularMarketPrice,pv=m.chartPreviousClose||p;return {l:s.l,p,ch:((p-pv)/pv)*100,$:s.$};}
       return null;
@@ -1131,7 +1151,7 @@ let _bdat={};
 async function fetchBonds(){
   $('berr').style.display='none';
   const results=await Promise.allSettled(BOND_SYMS.map(b=>
-    fetch(yf(b.s),{signal:AbortSignal.timeout(9000)}).then(r=>r.json()).then(d=>{
+    yf(b.s).then(d=>{
       const m=d?.chart?.result?.[0]?.meta;
       if(m?.regularMarketPrice){const p=m.regularMarketPrice,pv=m.chartPreviousClose||p;return {l:b.l,p,ch:p-pv,tenor:b.tenor};}
       return null;
@@ -1941,8 +1961,8 @@ let _liveVix=null,_liveSkew=null;
 async function fetchOptionsLive(){
   try{
     const [vixR,skewR]=await Promise.allSettled([
-      fetch(yf('%5EVIX'),{signal:AbortSignal.timeout(9000)}).then(r=>r.json()),
-      fetch(yf(YF_SKEW),{signal:AbortSignal.timeout(9000)}).then(r=>r.json()),
+      yf('%5EVIX'),
+      yf(YF_SKEW),
     ]);
     if(vixR.status==='fulfilled'){
       const m=vixR.value?.chart?.result?.[0]?.meta;
