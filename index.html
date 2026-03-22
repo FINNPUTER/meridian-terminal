@@ -421,7 +421,7 @@ input,select{font-family:inherit}
       <div class="dot dot4" style="background:var(--A);box-shadow:0 0 4px var(--A)66"></div>
       <span class="ptit">World Market Impact Map</span>
     </div>
-    <span class="mono" style="font-size:9px;color:var(--d)" id="map-status">Threshold 50 · 7 zones · GDELT powered</span>
+    <span class="mono" style="font-size:9px;color:var(--d)" id="map-status">7 zones · INTEL ENGINE</span>
   </div>
   <div id="mapwrap" style="height:280px;width:100%">
     <svg id="mapsvg"></svg>
@@ -432,11 +432,11 @@ input,select{font-family:inherit}
   <div style="padding:3px 0">
     <div class="mono" style="font-size:8px;letter-spacing:.6px;color:var(--d);margin-bottom:2px;padding:0 2px">Click a marker for market-impact details and sources.</div>
   </div>
-  <!-- TOP IMPACT EVENTS — live GDELT headlines -->
+  <!-- TOP IMPACT EVENTS -->
   <div id="map-events" style="border-top:1px solid var(--b0);padding-top:5px">
     <div class="mono" style="font-size:9px;letter-spacing:.8px;color:var(--d);text-transform:uppercase;margin-bottom:4px">Top Impact Events</div>
     <div id="map-events-list" style="max-height:100px;overflow-y:auto">
-      <div style="padding:4px;font-size:10px;color:var(--d);font-family:var(--mono)">Loading GDELT events…</div>
+      <div style="padding:4px;font-size:10px;color:var(--d);font-family:var(--mono)">Loading intelligence data…</div>
     </div>
   </div>
 </div>
@@ -665,7 +665,7 @@ input,select{font-family:inherit}
   <div style="padding:0 8px;border-left:1px solid var(--b0);display:flex;align-items:center;gap:8px;flex-shrink:0">
     <span class="mono" style="font-size:10px;color:var(--d)" id="bttime"></span>
     <div class="dot dot4" style="background:var(--G);box-shadow:0 0 3px var(--G)66;margin:0 2px"></div>
-    <span class="mono" style="font-size:10px;color:var(--d)">BINANCE · RSS · BONDS · COINGECKO · GDELT · FOREXFACTORY</span>
+    <span class="mono" style="font-size:10px;color:var(--d)">BINANCE · RSS · BONDS · COINGECKO · FOREXFACTORY</span>
     <span class="mono" style="font-size:9px;color:var(--b1);margin-left:6px;border-left:1px solid var(--b0);padding-left:6px" title="Keyboard shortcuts: 1-6 = tabs, R = refresh, Esc = close">⌨ 1-6 TABS · R REFRESH</span>
   </div>
 </div>
@@ -682,7 +682,7 @@ input,select{font-family:inherit}
    ▸ jsdelivr currency     — FX rates
    ▸ corsproxy + Yahoo     — Gold, Oil, SPX, VIX, SKEW, Bond Yields
    ▸ CoinGecko global      — BTC dominance, total market cap
-   ▸ GDELT Project v2      — Geopolitical event scoring, sentiment
+   ▸ Intel Engine          — Geopolitical event scoring, sentiment
    ▸ Forex Factory         — Economics calendar (live events)
    ▸ rss2json + allorigins — BBC, Reuters, Fox Biz, NYT news
    ▸ RSS proxies           — X/Twitter posts
@@ -1532,7 +1532,7 @@ function buildGeo(){ rebuildGeo(); }
 function buildSupply(){ rebuildSupply(); }
 
 /* ══════════════════════════════════════════════════════════════
-   LIVE GEO RISK ENGINE — GDELT + RSS Keyword Sentiment Scoring
+   LIVE GEO RISK ENGINE — Keyword Sentiment Scoring
 ═══════════════════════════════════════════════════════════════ */
 
 const GEO_REGIONS = [
@@ -1663,7 +1663,7 @@ async function computeGeoRisks(){
     rebuildImpact();rebuildGeo();rebuildSupply();updateCompositeDisplay();
     updateMapHotspots();renderTopEvents(newEvents);
     const srcBadge=$('geo-src-badge');
-    if(srcBadge){srcBadge.textContent='GDELT LIVE';srcBadge.style.color='var(--G)';srcBadge.style.background='var(--Gd)';srcBadge.style.borderColor='#22d87028';}
+    if(srcBadge){srcBadge.textContent='LIVE';srcBadge.style.color='var(--G)';srcBadge.style.background='var(--Gd)';srcBadge.style.borderColor='#22d87028';}
     console.log(`[MERIDIAN] Geo risk updated: composite=${_compositeRisk}, ${newEvents.length} regions scored`);
   }else{
     console.warn('[MERIDIAN] GDELT returned insufficient data — keeping fallback');
@@ -1711,7 +1711,7 @@ function updateCompositeDisplay(){
   const mapSt=$('map-status');
   if(mapSt){
     const activeCount=HOTSPOTS.filter(h=>h.r>=40).length;
-    mapSt.textContent=`${HOTSPOTS.length} zones · ${activeCount} elevated · GDELT powered · ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+    mapSt.textContent=`${HOTSPOTS.length} zones · ${activeCount} elevated · LIVE ENGINE · ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
   }
 }
 
@@ -1729,7 +1729,7 @@ function updateMapHotspots(){
 /* ── RE-RENDERABLE PANEL FUNCTIONS ─────────────────────────── */
 function rebuildImpact(){
   const w=$('tp-impact');if(!w)return;
-  w.innerHTML=`<div style="padding:5px 7px;background:var(--bg1);border:1px solid var(--b0);margin-bottom:7px"><div class="lbl" style="margin-bottom:1px">Global Risk Status · <span style="color:var(--G)">LIVE</span></div><div style="font-size:11.5px;color:var(--t);line-height:1.5">${GEO_EVENTS.length} active regions monitored via GDELT — Composite risk: <span style="color:${sCol(_compositeRisk)};font-weight:600">${_compositeRisk}</span></div></div>`;
+  w.innerHTML=`<div style="padding:5px 7px;background:var(--bg1);border:1px solid var(--b0);margin-bottom:7px"><div class="lbl" style="margin-bottom:1px">Global Risk Status · <span style="color:var(--G)">LIVE</span></div><div style="font-size:11.5px;color:var(--t);line-height:1.5">${GEO_EVENTS.length} active regions monitored — Composite risk: <span style="color:${sCol(_compositeRisk)};font-weight:600">${_compositeRisk}</span></div></div>`;
   GEO_EVENTS.forEach((ev,i)=>{
     const card=document.createElement('div');card.className='gcard';
     card.style.cssText=`border-left:2px solid ${ev.c}55;animation-delay:${i*.06}s`;
@@ -2026,7 +2026,7 @@ let _topEvents=[];
 function renderTopEvents(events){
   _topEvents=events;
   const w=$('map-events-list');if(!w)return;
-  if(!events.length){w.innerHTML='<div style="padding:4px;font-size:10px;color:var(--d);font-family:var(--mono)">No GDELT events yet — loading…</div>';return;}
+  if(!events.length){w.innerHTML='<div style="padding:4px;font-size:10px;color:var(--d);font-family:var(--mono)">Loading events…</div>';return;}
   w.innerHTML='';
   events.slice(0,6).forEach(ev=>{
     const col=sCol(ev.s||50);
