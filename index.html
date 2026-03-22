@@ -36,7 +36,7 @@
 :root {
   --bg0: #0e1c28; --bg1: #132232; --bg2: #182a3c; --bg3: #1e3248; --bg4: #243a54;
   --b0: #1e3248; --b1: #2a4460; --b2: #3a5878;
-  --w: #e4f0ea; --t: #b8dcd0; --m: #80a8a0; --d: #587a70;
+  --w: #e4f0ea; --t: #c8e8dc; --m: #90b8ae; --d: #6a9a8e;
   --G: #22d870; --Gd: #061a0e; --Gh: #22d87022;
   --A: #d08822; --Ad: #1a1004; --Ah: #d0882218;
   --R: #d04444; --Rd: #1a0808; --Rh: #d0444418;
@@ -63,18 +63,18 @@ input,select{font-family:inherit}
 .pfill{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 .scr{overflow-y:auto}
 .mono{font-family:var(--mono)}
-.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.8px;color:var(--d);text-transform:uppercase}
-.ptit{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:2px;color:var(--t);text-transform:uppercase}
+.lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.8px;color:var(--m);text-transform:uppercase}
+.ptit{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:2px;color:var(--w);text-transform:uppercase}
 .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--b0)}
 .phl{display:flex;align-items:center;gap:6px}
 .dot{display:inline-block;border-radius:50%;flex-shrink:0;animation:pulse 2.6s ease-in-out infinite}
 .dot4{width:5px;height:5px}.dot6{width:7px;height:7px}
 .tag{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:600;letter-spacing:.5px;border-radius:2px;white-space:nowrap}
-.txs{font-size:9.5px;padding:2px 6px}.tsm{font-size:10.5px;padding:2px 6px}
+.txs{font-size:10px;padding:2px 6px}.tsm{font-size:11px;padding:2px 6px}
 .fbtn{font-family:var(--mono);font-size:10px;letter-spacing:.5px;padding:3px 7px;border-radius:2px;background:var(--bg0);color:var(--m);border:1px solid var(--b0);cursor:pointer;transition:all .1s}
 .fbtn:hover,.fbtn.on{background:var(--bg3);color:var(--t);border-color:var(--b1)}
-.tbtn{font-family:var(--mono);font-size:11.5px;letter-spacing:.8px;padding:5px 11px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--d);transition:all .15s;cursor:pointer;flex-shrink:0;position:relative}
-.tbtn:hover{color:var(--m)}
+.tbtn{font-family:var(--mono);font-size:11.5px;letter-spacing:.8px;padding:5px 11px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--m);transition:all .15s;cursor:pointer;flex-shrink:0;position:relative}
+.tbtn:hover{color:var(--w)}
 .tbtn.on{color:var(--w);border-bottom-color:var(--G);text-shadow:0 0 12px var(--G)22}
 .pbtn{font-family:var(--mono);font-size:10px;letter-spacing:.4px;padding:3px 7px;border-radius:2px;background:var(--bg0);color:var(--m);border:1px solid var(--b0);cursor:pointer;transition:all .1s}
 .pbtn.on,.pbtn:hover{background:var(--bg3);color:var(--t);border-color:var(--b1)}
@@ -85,7 +85,7 @@ input,select{font-family:inherit}
 /* Clock */
 .crow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--b0)}
 .crow:last-child{border-bottom:none}
-.mbadge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.8px;padding:1px 5px;border-radius:2px}
+.mbadge{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.8px;padding:1px 5px;border-radius:2px}
 /* Map */
 .gcard{background:var(--bg1);border:1px solid var(--b0);padding:8px 9px;margin-bottom:4px;animation:fadeup .2s ease both}
 .chkcard{background:var(--bg1);border:1px solid var(--b0);padding:7px 9px;margin-bottom:4px}
@@ -200,7 +200,7 @@ input,select{font-family:inherit}
 .skel{background:linear-gradient(90deg,var(--bg0) 25%,var(--bg2) 50%,var(--bg0) 75%);background-size:200% 100%;animation:shimmer 1.8s ease-in-out infinite;border-radius:2px}
 
 /* MERIDIAN logo subtle glow */
-.logo-glow{text-shadow:0 0 18px var(--T)22,0 0 40px var(--T)08}
+.logo-glow{text-shadow:0 0 18px var(--T)44,0 0 40px var(--T)18}
 
 /* Price update flash */
 @keyframes flashGreen{0%{background:var(--G)12}100%{background:transparent}}
@@ -295,14 +295,14 @@ input,select{font-family:inherit}
 <div id="topbar">
   <div style="padding:0 12px;border-right:1px solid var(--b0);display:flex;align-items:center;gap:7px;flex-shrink:0">
     <div class="dot dot6 dotlive" style="border-radius:2px;background:var(--G);box-shadow:0 0 10px var(--G)66,0 0 20px var(--G)22"></div>
-    <span class="mono logo-glow" style="font-size:13.5px;font-weight:600;letter-spacing:3.5px;color:var(--t)">MERIDIAN</span>
-    <span class="mono" style="font-size:6px;letter-spacing:2px;color:var(--d)">GEO · MARKET · INTELLIGENCE · v5</span>
+    <span class="mono logo-glow" style="font-size:14px;font-weight:600;letter-spacing:3.5px;color:var(--w)">MERIDIAN</span>
+    <span class="mono" style="font-size:9px;letter-spacing:2.5px;color:var(--m)">GEO · MARKET · INTELLIGENCE</span>
   </div>
   <!-- BTC Dominance pill -->
   <div style="padding:0 10px;border-right:1px solid var(--b0);display:flex;align-items:center;gap:5px;flex-shrink:0">
-    <span class="mono" style="font-size:9px;color:var(--d);letter-spacing:.6px">BTC.D</span>
+    <span class="mono" style="font-size:10px;color:var(--m);letter-spacing:.6px">BTC.D</span>
     <span class="mono" style="font-size:12px;color:var(--A);font-weight:600" id="btcd">—%</span>
-    <span class="mono" style="font-size:9px;color:var(--d)">MCap</span>
+    <span class="mono" style="font-size:10px;color:var(--m)">MCap</span>
     <span class="mono" style="font-size:11.5px;color:var(--t)" id="mcap">—</span>
   </div>
   <div class="tickwrap" style="display:flex;align-items:center">
@@ -311,7 +311,7 @@ input,select{font-family:inherit}
       </div>
   </div>
   <div style="padding:0 10px;border-left:1px solid var(--b0);display:flex;align-items:center;gap:5px;flex-shrink:0" title="Coordinated Universal Time">
-    <span class="mono" style="font-size:9px;color:var(--d)">UTC</span>
+    <span class="mono" style="font-size:10px;color:var(--m)">UTC</span>
     <span class="mono" style="font-size:12px;color:var(--t);letter-spacing:.5px" id="utcclk">--:--:--</span>
   </div>
 </div>
@@ -421,7 +421,7 @@ input,select{font-family:inherit}
       <div class="dot dot4" style="background:var(--A);box-shadow:0 0 4px var(--A)66"></div>
       <span class="ptit">World Market Impact Map</span>
     </div>
-    <span class="mono" style="font-size:9px;color:var(--d)" id="map-status">7 zones · INTEL ENGINE</span>
+    <span class="mono" style="font-size:10px;color:var(--m)" id="map-status">7 zones · INTEL ENGINE</span>
   </div>
   <div id="mapwrap" style="height:280px;width:100%">
     <svg id="mapsvg"></svg>
@@ -430,7 +430,7 @@ input,select{font-family:inherit}
     <div id="map-tooltip"></div>
   </div>
   <div style="padding:3px 0">
-    <div class="mono" style="font-size:8px;letter-spacing:.6px;color:var(--d);margin-bottom:2px;padding:0 2px">Click a marker for market-impact details and sources.</div>
+    <div class="mono" style="font-size:9px;letter-spacing:.6px;color:var(--m);margin-bottom:2px;padding:0 2px">Click a marker for market-impact details and sources.</div>
   </div>
   <!-- TOP IMPACT EVENTS -->
   <div id="map-events" style="border-top:1px solid var(--b0);padding-top:5px">
