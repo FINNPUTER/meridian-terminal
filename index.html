@@ -703,21 +703,21 @@ const FX_API      = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@late
 const CG_GLOBAL   = 'https://api.coingecko.com/api/v3/global';
 const TOPO_URL    = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 const yfUrl    = s => 'https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1d';
-const yfProxies= [
-  s => PROXY_URL ? `${PROXY_URL}/proxy?url=${encodeURIComponent(yfUrl(s))}` : null,
-  s => `https://corsproxy.io/?${encodeURIComponent(yfUrl(s))}`,
-  s => `https://api.allorigins.win/raw?url=${encodeURIComponent(yfUrl(s))}`,
-  s => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yfUrl(s))}`,
-  s => `https://corsproxy.org/?${encodeURIComponent(yfUrl(s))}`,
-].filter(Boolean);
 async function yf(s){
-  for(const mkUrl of yfProxies){
-    const url=mkUrl(s);
-    if(!url)continue;
+  const proxies=[
+    PROXY_URL ? `${PROXY_URL}/yf/${encodeURIComponent(s)}` : null,
+    PROXY_URL ? `${PROXY_URL}/proxy?url=${encodeURIComponent(yfUrl(s))}` : null,
+    `https://corsproxy.io/?${encodeURIComponent(yfUrl(s))}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(yfUrl(s))}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yfUrl(s))}`,
+  ].filter(Boolean);
+  for(const url of proxies){
     try{
       const r=await fetch(url,{signal:AbortSignal.timeout(8000)});
       if(!r.ok)continue;
-      const d=await r.json();
+      let d=await r.json();
+      // allorigins wraps in {contents:"..."}
+      if(d.contents&&typeof d.contents==='string'){try{d=JSON.parse(d.contents);}catch{continue;}}
       if(d?.chart?.result?.[0]?.meta)return d;
     }catch{}
   }
@@ -2388,6 +2388,293 @@ async function runMultiScan(){
   });
   const ts=document.getElementById('scan-ts');if(ts)ts.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
+/* ═══════════════════════════════════════════════════════════════
+   ⚡ GEO-TACTICAL ENGINE — Combines Geo Risk Regime + Technicals
+   The edge: quantified geopolitical context + technical confirmation
+═══════════════════════════════════════════════════════════════ */
+
+const GEO_REGIMES = {
+  RISK_OFF:   { min:60, label:'RISK-OFF',    color:'var(--R)',  icon:'🔴' },
+  ELEVATED:   { min:40, label:'ELEVATED',    color:'var(--A)',  icon:'🟡' },
+  NEUTRAL:    { min:20, label:'NEUTRAL',     color:'var(--m)',  icon:'⚪' },
+  RISK_ON:    { min:0,  label:'RISK-ON',     color:'var(--G)',  icon:'🟢' },
+};
+
+// Which assets benefit in which regime
+const REGIME_BIAS = {
+  RISK_OFF: {
+    bullish: ['GOLD','SILVER','VIX','DXY','US 10Y','US 30Y'],
+    bearish: ['BTCUSDT','ETHUSDT','SOLUSDT','S&P 500','NASDAQ'],
+    desc: 'Safe havens up, risk assets down. Gold/Bonds/USD favored.'
+  },
+  ELEVATED: {
+    bullish: ['GOLD','VIX','DXY','ETHUSDT'],
+    bearish: ['SOLUSDT','AVAXUSDT','DOGEUSDT'],
+    desc: 'Hedging active. Large caps hold, small caps vulnerable.'
+  },
+  NEUTRAL: {
+    bullish: [],
+    bearish: [],
+    desc: 'No strong geo bias. Pure technical signals dominate.'
+  },
+  RISK_ON: {
+    bullish: ['BTCUSDT','ETHUSDT','SOLUSDT','S&P 500','NASDAQ'],
+    bearish: ['GOLD','VIX','DXY'],
+    desc: 'Risk appetite high. Crypto/equities favored, havens weak.'
+  },
+};
+
+function getGeoRegime(){
+  const score = _compositeRisk || 0;
+  if(score >= 60) return 'RISK_OFF';
+  if(score >= 40) return 'ELEVATED';
+  if(score >= 20) return 'NEUTRAL';
+  return 'RISK_ON';
+}
+
+function getRegionThreat(asset){
+  // Map assets to relevant geo regions
+  const map = {
+    'GOLD':['persian-gulf','red-sea','ukraine'],
+    'SILVER':['persian-gulf','ukraine'],
+    'OIL WTI':['persian-gulf','red-sea','suez'],
+    'VIX':['persian-gulf','taiwan','ukraine'],
+    'BTCUSDT':['taiwan','ukraine'],
+    'ETHUSDT':['taiwan','ukraine'],
+    'SOLUSDT':['taiwan'],
+    'S&P 500':['persian-gulf','taiwan','ukraine'],
+    'NASDAQ':['taiwan'],
+    'DXY':['persian-gulf','ukraine'],
+  };
+  const regions = map[asset] || [];
+  if(!regions.length) return 0;
+  const scores = regions.map(r => _geoScores[r] || 0);
+  return Math.max(...scores);
+}
+
+function geoTechConfidence(regime, asset, techVerdict, techScore){
+  const bias = REGIME_BIAS[regime];
+  const isBullishAsset = bias.bullish.includes(asset);
+  const isBearishAsset = bias.bearish.includes(asset);
+  
+  let geoAlign = 0; // -1 to 1
+  if(isBullishAsset && techScore > 0) geoAlign = 0.8;       // geo + tech agree bullish
+  else if(isBearishAsset && techScore < 0) geoAlign = 0.8;  // geo + tech agree bearish
+  else if(isBullishAsset && techScore < 0) geoAlign = -0.4;  // geo says up, tech says down
+  else if(isBearishAsset && techScore > 0) geoAlign = -0.4;  // geo says down, tech says up
+  else if(regime === 'NEUTRAL') geoAlign = 0.2;               // neutral = pure tech
+  
+  const regionThreat = getRegionThreat(asset);
+  const threatBoost = regionThreat > 50 ? 0.15 : regionThreat > 30 ? 0.05 : 0;
+  
+  const raw = Math.abs(techScore) * 0.6 + Math.abs(geoAlign) * 0.3 + threatBoost;
+  const confidence = Math.min(95, Math.round(raw * 100));
+  
+  let conviction = 'LOW';
+  if(confidence >= 75) conviction = 'HIGH';
+  else if(confidence >= 55) conviction = 'MEDIUM';
+  
+  return { confidence, conviction, geoAlign, regionThreat };
+}
+
+let geoTacBuilt = false;
+let geoTacTimer = null;
+
+function initGeoTactical(){
+  // Insert before the regular signal scanner
+  const sigPanel = document.getElementById('tp-signals');
+  if(!sigPanel) return;
+  
+  // Check if already injected
+  if(document.getElementById('geo-tac-engine')) return;
+  
+  const container = document.createElement('div');
+  container.id = 'geo-tac-engine';
+  container.style.cssText = 'margin-bottom:8px';
+  container.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--b1);padding:8px 10px;margin-bottom:6px;border-radius:2px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="dot dot4 dotlive" style="background:var(--G);box-shadow:0 0 6px var(--G)66"></div>
+          <span class="mono" style="font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--w)">GEO-TACTICAL ENGINE</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="mono" style="font-size:9px;color:var(--d)" id="gtac-ts">—</span>
+          <button onclick="runGeoTactical()" class="fbtn">↻ SCAN</button>
+        </div>
+      </div>
+      <div id="gtac-regime" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg1);border:1px solid var(--b0);margin-bottom:6px">
+        <div class="spin"></div>
+        <span class="mono" style="font-size:10.5px;color:var(--d)">Analyzing regime…</span>
+      </div>
+      <div id="gtac-signals" style="font-family:var(--mono);font-size:10px;color:var(--d);text-align:center;padding:6px">
+        Scanning assets against geo regime…
+      </div>
+    </div>`;
+  
+  sigPanel.insertBefore(container, sigPanel.firstChild);
+  
+  runGeoTactical();
+  if(geoTacTimer) clearInterval(geoTacTimer);
+  geoTacTimer = setInterval(runGeoTactical, 60000); // every 60s
+}
+
+async function runGeoTactical(){
+  const regime = getGeoRegime();
+  const regimeData = GEO_REGIMES[regime] || GEO_REGIMES.NEUTRAL;
+  const bias = REGIME_BIAS[regime];
+  
+  // Update regime display
+  const regimeEl = document.getElementById('gtac-regime');
+  if(regimeEl){
+    regimeEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;flex:1">
+        <span style="font-size:16px">${regimeData.icon}</span>
+        <div>
+          <div class="mono" style="font-size:13px;font-weight:700;color:${regimeData.color};letter-spacing:1px">${regimeData.label}</div>
+          <div class="mono" style="font-size:9.5px;color:var(--m);margin-top:1px">${bias.desc}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="mono" style="font-size:22px;font-weight:700;color:${regimeData.color}">${_compositeRisk||0}</div>
+        <div class="mono" style="font-size:8px;color:var(--d)">GEO SCORE</div>
+      </div>`;
+  }
+  
+  // Scan crypto assets
+  const cryptoAssets = ['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT','XRPUSDT','AVAXUSDT'];
+  const results = await Promise.allSettled(
+    cryptoAssets.map(p => fetchKlines(p, '1h', 250).then(d => ({pair:p, ...compute(d)})))
+  );
+  
+  // Build combined signals
+  const signals = [];
+  results.forEach(r => {
+    if(r.status !== 'fulfilled') return;
+    const s = r.value;
+    const asset = s.pair;
+    const name = CNAME[asset] || asset.replace('USDT','');
+    const { confidence, conviction, geoAlign, regionThreat } = geoTechConfidence(regime, asset, s.verdict, s.sc);
+    
+    let direction = s.sc > 0 ? 'LONG' : s.sc < 0 ? 'SHORT' : 'NEUTRAL';
+    // Override direction if geo strongly disagrees
+    if(geoAlign < -0.2 && Math.abs(s.sc) < 0.3) direction = 'AVOID';
+    
+    const dirColor = direction === 'LONG' ? 'var(--G)' : direction === 'SHORT' ? 'var(--R)' : direction === 'AVOID' ? 'var(--A)' : 'var(--m)';
+    const convColor = conviction === 'HIGH' ? 'var(--G)' : conviction === 'MEDIUM' ? 'var(--A)' : 'var(--d)';
+    
+    const geoLabel = geoAlign > 0.3 ? 'GEO ALIGNED' : geoAlign < -0.2 ? 'GEO CONFLICT' : 'GEO NEUTRAL';
+    const geoColor = geoAlign > 0.3 ? 'var(--G)' : geoAlign < -0.2 ? 'var(--R)' : 'var(--m)';
+    
+    signals.push({
+      name, asset, direction, dirColor, conviction, convColor, confidence,
+      geoLabel, geoColor, regionThreat,
+      rsi: s.rsi, macd: s.macd, verdict: s.verdict, vc: s.vc, 
+      price: s.last, chg: s.chg1,
+      score: Math.abs(s.sc) * confidence / 100 // combined score for sorting
+    });
+  });
+  
+  // Also add traditional assets from Yahoo Finance data if available
+  ['GOLD','OIL WTI','S&P 500','VIX'].forEach(asset => {
+    const d = _idat[asset];
+    if(!d) return;
+    const isBull = bias.bullish.includes(asset);
+    const isBear = bias.bearish.includes(asset);
+    const techDir = d.ch > 0.5 ? 1 : d.ch < -0.5 ? -1 : 0;
+    const direction = isBull ? 'LONG' : isBear ? 'SHORT' : 'WATCH';
+    const geoAlign = (isBull && techDir > 0) || (isBear && techDir < 0) ? 0.7 : 0.2;
+    const confidence = Math.min(90, Math.round(40 + Math.abs(d.ch||0)*5 + geoAlign*30));
+    const conviction = confidence >= 70 ? 'HIGH' : confidence >= 50 ? 'MEDIUM' : 'LOW';
+    const dirColor = direction === 'LONG' ? 'var(--G)' : direction === 'SHORT' ? 'var(--R)' : 'var(--m)';
+    const convColor = conviction === 'HIGH' ? 'var(--G)' : conviction === 'MEDIUM' ? 'var(--A)' : 'var(--d)';
+    const geoLabel = geoAlign > 0.3 ? 'GEO ALIGNED' : 'GEO NEUTRAL';
+    const geoColor = geoAlign > 0.3 ? 'var(--G)' : 'var(--m)';
+    
+    signals.push({
+      name: asset, asset, direction, dirColor, conviction, convColor, confidence,
+      geoLabel, geoColor, regionThreat: getRegionThreat(asset),
+      rsi: null, macd: null, verdict: direction, vc: dirColor,
+      price: d.p, chg: d.ch,
+      score: confidence / 100
+    });
+  });
+  
+  // Sort by conviction then confidence
+  signals.sort((a,b) => b.score - a.score);
+  
+  // Render
+  const sigEl = document.getElementById('gtac-signals');
+  if(!sigEl) return;
+  
+  if(!signals.length){
+    sigEl.innerHTML = '<div style="padding:8px;text-align:center;color:var(--d)">No data available</div>';
+    return;
+  }
+  
+  // Top signals (HIGH conviction only)
+  const highConv = signals.filter(s => s.conviction === 'HIGH' && s.direction !== 'NEUTRAL' && s.direction !== 'AVOID');
+  
+  let html = '';
+  
+  if(highConv.length){
+    html += '<div style="margin-bottom:6px">';
+    html += '<div class="mono" style="font-size:9px;letter-spacing:.8px;color:var(--G);margin-bottom:4px">⚡ HIGH CONVICTION SIGNALS</div>';
+    highConv.slice(0,3).forEach(s => {
+      html += `<div style="background:var(--bg1);border:1px solid ${s.dirColor}33;border-left:3px solid ${s.dirColor};padding:8px 10px;margin-bottom:4px;border-radius:0 2px 2px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="display:flex;align-items:center;gap:6px">
+            ${CLOGO[s.asset]?`<img src="${CLOGO[s.asset]}" width="16" height="16" style="border-radius:50%" onerror="this.style.display='none'">`:''}
+            <span class="mono" style="font-size:13px;font-weight:600;color:var(--w)">${s.name}</span>
+            <span class="mono" style="font-size:12px;font-weight:700;color:${s.dirColor};letter-spacing:1px">${s.direction}</span>
+          </div>
+          <span class="mono" style="font-size:18px;font-weight:700;color:${s.convColor}">${s.confidence}%</span>
+        </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px">
+          <span class="tag txs" style="color:${s.geoColor};background:${s.geoColor}12;border:1px solid ${s.geoColor}28">${s.geoLabel}</span>
+          <span class="tag txs" style="color:var(--m);background:var(--bg0);border:1px solid var(--b0)">Tech: ${s.verdict}</span>
+          ${s.rsi!==null?`<span class="tag txs" style="color:${s.rsi<30?'var(--G)':s.rsi>70?'var(--R)':'var(--m)'};background:var(--bg0);border:1px solid var(--b0)">RSI ${s.rsi.toFixed(0)}</span>`:''}
+          ${s.regionThreat>30?`<span class="tag txs" style="color:var(--A);background:var(--Ah);border:1px solid var(--A)28">THREAT ${s.regionThreat}</span>`:''}
+        </div>
+        <div class="mono" style="font-size:10px;color:var(--m)">
+          Price ${typeof s.price==='number'?fmtP(s.price,true):s.price} · 
+          <span style="color:${(s.chg||0)>=0?'var(--G)':'var(--R)'}">${(s.chg||0)>=0?'▲':'▼'}${Math.abs(s.chg||0).toFixed(2)}%</span>
+          ${s.macd?` · MACD ${s.macd.hist>0?'▲':'▼'}${Math.abs(s.macd.hist).toFixed(2)}`:''}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  } else {
+    html += `<div style="background:var(--bg1);border:1px solid var(--b0);padding:8px 10px;margin-bottom:6px;text-align:center">
+      <span class="mono" style="font-size:10.5px;color:var(--m)">No high-conviction signals in current regime. Monitoring…</span>
+    </div>`;
+  }
+  
+  // All signals table
+  html += '<div class="mono" style="font-size:9px;letter-spacing:.8px;color:var(--d);margin-bottom:4px">ALL SCANNED ASSETS</div>';
+  signals.forEach(s => {
+    html += `<div style="display:flex;align-items:center;gap:5px;padding:3px 2px;border-bottom:1px solid var(--b0)">
+      ${CLOGO[s.asset]?`<img src="${CLOGO[s.asset]}" width="12" height="12" style="border-radius:50%" onerror="this.style.display='none'">`:'<span style="width:12px"></span>'}
+      <span class="mono" style="font-size:11px;color:var(--t);min-width:40px;font-weight:500">${s.name}</span>
+      <span class="mono" style="font-size:10.5px;font-weight:700;color:${s.dirColor};min-width:45px">${s.direction}</span>
+      <span class="tag txs" style="color:${s.convColor};background:${s.convColor}12;border:1px solid ${s.convColor}22;min-width:50px;justify-content:center">${s.conviction} ${s.confidence}%</span>
+      <span class="tag txs" style="color:${s.geoColor};background:${s.geoColor}08;border:1px solid ${s.geoColor}18">${s.geoLabel}</span>
+      <span class="mono" style="font-size:10px;color:${(s.chg||0)>=0?'var(--G)':'var(--R)'};margin-left:auto">${(s.chg||0)>=0?'▲':'▼'}${Math.abs(s.chg||0).toFixed(2)}%</span>
+    </div>`;
+  });
+  
+  sigEl.innerHTML = html;
+  
+  const tsEl = document.getElementById('gtac-ts');
+  if(tsEl) tsEl.textContent = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// Hook into the existing initSignals
+const _origInitSignals = initSignals;
+initSignals = function(){
+  _origInitSignals();
+  setTimeout(initGeoTactical, 500);
+};
 </script>
 </body>
 </html>
