@@ -261,8 +261,13 @@ section{position:relative;padding:clamp(90px,12vw,170px) 0}
 .card:hover{border-color:rgba(63,224,160,.35)}
 .card h3{font-size:24px;font-weight:700;font-stretch:85%;margin:18px 0 8px}
 .card p{color:var(--muted);font-size:15.5px}
-.ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:var(--signal-dim);color:var(--signal);box-shadow:inset 0 0 0 1px rgba(63,224,160,.25)}
-.ico svg{width:22px;height:22px}
+.ico{width:84px;height:84px;margin:-8px 0 -4px -8px;position:relative}
+.ico::after{content:"";position:absolute;inset:22% 18% 6%;border-radius:50%;background:radial-gradient(closest-side,rgba(63,224,160,.35),transparent);filter:blur(12px);z-index:-1;opacity:.6;transition:opacity .4s}
+.ico img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));animation:icofloat 5s ease-in-out infinite;animation-delay:var(--fd,0s);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes icofloat{50%{translate:0 -5px}}
+.card:hover .ico img{transform:scale(1.12) rotate(-4deg)}
+.card:hover .ico::after{opacity:1}
+.card:nth-child(2) .ico img{--fd:-1s}.card:nth-child(3) .ico img{--fd:-2s}.card:nth-child(4) .ico img{--fd:-3s}.card:nth-child(5) .ico img{--fd:-1.5s}.card:nth-child(6) .ico img{--fd:-2.5s}.card:nth-child(7) .ico img{--fd:-.5s}
 .c-4{grid-column:span 4}.c-3{grid-column:span 3}.c-2{grid-column:span 2}
 .mini{margin-top:22px;display:grid;gap:9px}
 .mini-row{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px}
@@ -504,39 +509,39 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
 
       <div class="bento">
         <article class="card c-4 rv">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
+          <div class="ico"><img src="assets/icons/pin.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>World market impact map</h3>
           <p>Every hotspot on one map, colored by severity. Click a marker to see what is happening and which markets it touches.</p>
           <div class="mini" id="miniMap"></div>
         </article>
         <article class="card c-2 rv" style="--d:.08s">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+          <div class="ico"><img src="assets/icons/radar.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Geo-Tactical signals</h3>
           <p>Combines the current geo risk regime with price technicals and tells you if conditions favor risk on or risk off.</p>
         </article>
         <article class="card c-2 rv">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg></div>
+          <div class="ico"><img src="assets/icons/chart.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Prices, funding and open interest</h3>
           <p>Crypto, gold, oil, bonds and FX side by side, plus funding rates, open interest and long short ratios.</p>
         </article>
         <article class="card c-2 rv" style="--d:.08s">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h6M14 12h6"/><circle cx="12" cy="12" r="2"/><path d="M4 7v10M20 7v10"/></svg></div>
+          <div class="ico"><img src="assets/icons/shield.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Bilateral threat monitor</h3>
           <p>Tension readings for the pairs that matter most: US and Iran, Israel and Iran, US and China, NATO and Russia.</p>
         </article>
         <article class="card c-2 rv" style="--d:.16s">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <div class="ico"><img src="assets/icons/binoculars.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Economics calendar</h3>
           <p>CPI, rate decisions, payrolls and oil inventories with forecasts, filtered by region and impact.</p>
         </article>
         <article class="card c-3 rv">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <div class="ico"><img src="assets/icons/satellite.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Live news and TV</h3>
           <p>The major newsrooms in one feed and live broadcast streams right next to your charts.</p>
           <div class="chips"><span class="chip">BBC</span><span class="chip">Reuters</span><span class="chip">Bloomberg</span><span class="chip">CNBC</span><span class="chip">Al Jazeera</span><span class="chip">Sky News</span><span class="chip">France 24</span><span class="chip">DW</span></div>
         </article>
         <article class="card c-3 rv" style="--d:.08s">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div class="ico"><img src="assets/icons/globe.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>World clock and market hours</h3>
           <p>New York, London, Frankfurt, Dubai and Singapore with open and closed status, so you always know which session is driving price.</p>
           <div class="chips"><span class="chip">NYSE</span><span class="chip">LSE</span><span class="chip">XETRA</span><span class="chip">DFM</span><span class="chip">SGX</span></div>
