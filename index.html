@@ -133,6 +133,10 @@ main{overflow-x:clip}
 @keyframes mq{to{transform:translateX(-50%)}}
 .mq-item{display:flex;align-items:center;gap:10px;padding:16px 28px;font-family:var(--mono);font-size:14px;white-space:nowrap;border-right:1px solid var(--line)}
 .mq-item .k{color:var(--muted)}
+.mq-logo{width:18px;height:18px;border-radius:50%;flex:none;object-fit:cover;background:rgba(255,255,255,.06)}
+.q-logo{width:24px;height:24px;border-radius:50%;flex:none;object-fit:cover;background:rgba(255,255,255,.06)}
+.q-k{display:flex;align-items:center;gap:9px}
+.q-k span{margin-left:0}
 .mq-item .v{font-weight:600;font-variant-numeric:tabular-nums}
 .up{color:var(--signal)}.down{color:var(--red)}
 .sev{width:7px;height:7px;border-radius:50%}
@@ -155,6 +159,50 @@ section{position:relative;padding:clamp(90px,12vw,170px) 0}
 .stat-v small{font-size:.45em;color:var(--signal);margin-left:4px}
 .stat-k{color:var(--muted);font-size:14.5px;margin-top:10px}
 @media (max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.stat{border-bottom:1px solid var(--line)}.stat:nth-child(2n){border-right:0}.stat:last-child{grid-column:1/-1;border-bottom:0}}
+
+/* wire */
+.wire{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:start}
+.wire>*{min-width:0}
+.wire-main{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(13,30,46,.75),rgba(7,19,32,.75));padding:22px}
+.wire-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.wf{padding:7px 14px;border-radius:999px;border:1px solid var(--line-strong);font-size:13.5px;color:var(--muted);transition:.2s}
+.wf:hover{color:var(--text)}
+.wf[aria-selected="true"]{background:var(--signal);border-color:var(--signal);color:#03261a;font-weight:600}
+.wf b{font-weight:500;opacity:.7;margin-left:4px}
+.wire-list{list-style:none;display:grid}
+.wire-list li{border-top:1px solid var(--line);animation:wirein .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*50ms)}
+@keyframes wirein{from{opacity:0;transform:translateY(8px)}}
+.wire-list a.wire-link{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:15px 6px;border-radius:12px;transition:background .2s}
+.wire-list a.wire-link:hover{background:rgba(255,255,255,.04)}
+.wire-t{font-weight:600;font-size:16.5px;line-height:1.35}
+.wire-list a.wire-link:hover .wire-t{color:var(--signal)}
+.wire-m{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.wire-ago{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.wire-empty{padding:22px 6px;color:var(--muted);border-top:1px solid var(--line)}
+.wire-foot{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+.t-gold{color:#f5cf6a}.t-silver{color:#c9d4de}
+.wire-side{display:grid;gap:12px}
+.quote{position:relative;border:1px solid var(--line);border-radius:20px;padding:18px 20px;background:rgba(11,28,42,.7);overflow:hidden}
+.q-k{font-size:14px;color:var(--text);font-weight:600}
+.q-k span{color:var(--muted);font-weight:400;margin-left:6px;font-size:13px}
+.q-v{font-family:var(--mono);font-size:30px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+.q-c{font-family:var(--mono);font-size:13.5px;min-height:20px}
+.spark{position:absolute;right:16px;bottom:16px;width:42%;height:46px;overflow:visible}
+.quote-torch{background:radial-gradient(300px circle at 100% 0%,rgba(255,150,60,.16),transparent 60%),rgba(11,28,42,.7)}
+@media (max-width:960px){.wire{grid-template-columns:1fr}.wire-side{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.wire-side{grid-template-columns:1fr}}
+
+/* share on x */
+.xshare{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:32px;min-width:32px;padding:0 10px;border-radius:999px;border:1px solid var(--line-strong);background:rgba(255,255,255,.04);color:var(--muted);font-size:12.5px;font-weight:600;transition:color .2s,border-color .2s,background .2s,transform .2s}
+.xshare svg{width:13px;height:13px;flex:none}
+.xshare:hover{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.wire-list li{position:relative}
+.wire-list a.wire-link{padding-right:58px}
+.wire-list .xshare{position:absolute;right:8px;bottom:14px}
+.spot{position:relative}
+.spot .xshare{position:absolute;top:16px;right:16px;opacity:.75}
+.spot:hover .xshare{opacity:1}
+.spot h3{padding-right:90px}
 
 /* steps */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-strong);position:relative}
@@ -323,7 +371,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
   <nav class="nav" id="nav" aria-label="Main">
     <a href="#top" class="brand"><span class="dot"></span>MERIDIAN</a>
     <div class="nav-links">
-      <a href="#how">How it works</a>
+      <a href="#wire">Markets</a>
       <a href="#hotspots">Hotspots</a>
       <a href="#terminal">Terminal</a>
       <a href="#token">Token</a>
@@ -350,7 +398,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
       <p class="lead fade" style="--d:.75s">Meridian is a live terminal that reads <strong>conflict, chokepoints and sanctions</strong> around the globe and maps them to the assets they hit: oil, gold, bonds and crypto.</p>
       <div class="cta-row fade" style="--d:.9s">
         <a class="btn btn-primary mag" href="terminal/">Open the terminal</a>
-        <a class="btn btn-ghost mag" href="#token"><span><span data-ticker>$MERIDIAN</span> on Torch</span></a>
+        <a class="btn btn-ghost mag" href="#token"><span><span data-ticker>$MERIDIAN</span> on Torchpad</span></a>
       </div>
     </div>
 
@@ -375,6 +423,31 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
         <div class="stat"><div class="stat-v" data-count="7">0</div><div class="stat-k">Newsrooms in one feed</div></div>
         <div class="stat"><div class="stat-v" data-count="5">0</div><div class="stat-k">Live TV channels built in</div></div>
         <div class="stat"><div class="stat-v"><span data-count="24">0</span><small>h</small></div><div class="stat-k">Rolling window for every score</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIRE -->
+  <section id="wire">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="split">What is moving markets right now.</h2>
+        <p class="rv">Fresh headlines on gold, silver, oil, rates, tariffs and crypto, pulled from global news and sorted by what they touch. Updated every few minutes.</p>
+      </div>
+      <div class="wire">
+        <div class="wire-main rv">
+          <div class="wire-filters" id="wireFilters" role="tablist" aria-label="Filter headlines"></div>
+          <ol class="wire-list" id="wireList" aria-live="polite">
+            <li class="wire-empty">Loading the market wire</li>
+          </ol>
+          <div class="wire-foot"><span class="dot"></span><span id="wireStamp">Connecting</span></div>
+        </div>
+        <div class="wire-side">
+          <div class="quote rv" data-q="gold"><div class="q-k"><img class="q-logo" id="ql-gold" src="assets/logos/gold.svg" alt="" width="24" height="24">Gold <span>per oz</span></div><div class="q-v" id="q-gold">...</div><div class="q-c" id="qc-gold"></div><svg class="spark" id="sp-gold" viewBox="0 0 100 30" preserveAspectRatio="none"></svg></div>
+          <div class="quote rv" style="--d:.06s" data-q="silver"><div class="q-k"><img class="q-logo" id="ql-silver" src="assets/logos/silver.svg" alt="" width="24" height="24">Silver <span>per oz</span></div><div class="q-v" id="q-silver">...</div><div class="q-c" id="qc-silver"></div><svg class="spark" id="sp-silver" viewBox="0 0 100 30" preserveAspectRatio="none"></svg></div>
+          <div class="quote rv" style="--d:.12s" data-q="oil"><div class="q-k"><img class="q-logo" id="ql-oil" src="assets/logos/oil.svg" alt="" width="24" height="24">Crude oil <span>WTI</span></div><div class="q-v" id="q-oil">...</div><div class="q-c" id="qc-oil"></div><svg class="spark" id="sp-oil" viewBox="0 0 100 30" preserveAspectRatio="none"></svg></div>
+          <div class="quote quote-torch rv" style="--d:.18s" data-q="torch"><div class="q-k"><img class="q-logo" id="ql-torch" src="assets/logos/torch-fallback.svg" alt="" width="24" height="24">TORCH <span>Robinhood Chain</span></div><div class="q-v" id="q-torch">...</div><div class="q-c" id="qc-torch"></div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -485,21 +558,21 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
           <div class="rv"><div class="ticker-big" data-ticker>$MERIDIAN</div>
           <p style="color:var(--muted);font-size:18px;max-width:46ch">The terminal stays free. The token is how the people who believe in it own a piece of where it goes next.</p></div>
           <dl class="token-meta rv" style="--d:.1s">
-            <div><dt>Chain</dt><dd>Solana</dd></div>
-            <div><dt>Launchpad</dt><dd>Torch</dd></div>
+            <div><dt>Chain</dt><dd>Robinhood Chain</dd></div>
+            <div><dt>Launchpad</dt><dd>Torchpad</dd></div>
             <div><dt>Pair</dt><dd id="tkPair">TBA</dd></div>
             <div><dt>Status</dt><dd id="tkStatus">Launching soon</dd></div>
           </dl>
           <div class="ca rv" style="--d:.15s"><code id="caText">Contract address goes live at launch</code><button id="caCopy" disabled>Copy</button></div>
           <div class="cta-row rv" style="--d:.2s">
-            <a class="btn btn-primary mag" id="buyBtn" href="#" aria-disabled="true" target="_blank" rel="noopener">Buy on Torch</a>
+            <a class="btn btn-primary mag" id="buyBtn" href="#" aria-disabled="true" target="_blank" rel="noopener">Buy on Torchpad</a>
             <a class="btn btn-ghost mag" id="xBtn" href="#" target="_blank" rel="noopener">Follow on X</a>
           </div>
         </div>
       </div>
       <ol class="road">
         <li class="live rv"><span class="pill p-live">Live</span><h3>Free terminal for everyone</h3><p>Map, risk scores, prices, news, TV and calendar. Open in any browser.</p></li>
-        <li class="launch rv" style="--d:.1s"><span class="pill p-launch">At launch</span><h3>Token on Torch</h3><p>Fair launch on Solana through Torch. Contract address only from this page and our official X account.</p></li>
+        <li class="launch rv" style="--d:.1s"><span class="pill p-launch">At launch</span><h3>Token on Torchpad</h3><p>Fair launch on Robinhood Chain through Torchpad. Contract address only from this page and our official X account.</p></li>
         <li class="rv" style="--d:.2s"><span class="pill p-next">Next</span><h3>Holder access to signals</h3><p>Connect your wallet and holders unlock the Geo-Tactical signal feed inside the terminal.</p></li>
         <li class="rv" style="--d:.3s"><span class="pill p-next">Next</span><h3>Risk spike alerts</h3><p>A Telegram bot that pings holders the moment a hotspot jumps above its baseline.</p></li>
       </ol>
@@ -528,6 +601,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
       <div class="cta-row rv" style="--d:.1s">
         <a class="btn btn-primary mag" href="terminal/">Open the terminal</a>
         <a class="btn btn-ghost mag" href="#token"><span>Get <span data-ticker>$MERIDIAN</span></span></a>
+        <a class="btn btn-ghost mag" id="shareSite" href="#" target="_blank" rel="noopener"><span>Share on X</span></a>
       </div>
     </div>
   </section>
@@ -553,6 +627,8 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
    SETTINGS: edit only this block
    ========================================================= */
 const HERO_VIDEO = 'assets/hero.mp4';
+const PROXY = 'https://meridian-proxy-production.up.railway.app';
+const TORCH_CA = '0x000050e18ffa3f8f7ad170eb9cef160eb3ed1111'; // $TORCH on Robinhood Chain
 const TOKEN = {
   ticker: '$MERIDIAN',
   pair: '',          // e.g. '$TORCH'
@@ -576,10 +652,12 @@ if(TOKEN.ca){
   $('caText').textContent=TOKEN.ca;$('caCopy').disabled=false;$('tkStatus').textContent='Live';
   $('caCopy').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(TOKEN.ca).then(()=>toast('Address copied'))};
 }
-if(TOKEN.buyUrl){$('buyBtn').href=TOKEN.buyUrl;$('buyBtn').removeAttribute('aria-disabled');} else $('buyBtn').textContent='Buy on Torch soon';
+if(TOKEN.buyUrl){$('buyBtn').href=TOKEN.buyUrl;$('buyBtn').removeAttribute('aria-disabled');} else $('buyBtn').textContent='Buy on Torchpad soon';
 if(TOKEN.x) $('xBtn').href=TOKEN.x; else $('xBtn').style.display='none';
 [['X',TOKEN.x],['Telegram',TOKEN.telegram]].forEach(([n,u])=>{if(!u)return;const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.textContent=n;$('footLinks').appendChild(a);});
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600);}
+
+$('shareSite').href=xUrl('Found a free terminal that maps wars, chokepoints and sanctions to oil, gold and crypto in real time. Worth a bookmark:','https://meridian-gmi.com');
 
 /* ---------- hero video ---------- */
 const hv=$('heroVideo');
@@ -587,6 +665,15 @@ if(HERO_VIDEO && !reduce){
   hv.src=HERO_VIDEO;
   hv.addEventListener('canplay',()=>{hv.classList.add('ready');hv.play().catch(()=>{});},{once:true});
 }
+
+/* ---------- share on x ---------- */
+const SITE='https://meridian-gmi.com';
+const XICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L2.9 2h6.4l4.4 5.9L18.9 2zm-1.1 18.1h1.7L8.3 3.8H6.5l11.3 16.3z"/></svg>';
+function xUrl(text,url){return 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);}
+function xBtn(text,url,label,aria){return `<a class="xshare" href="${xUrl(text,url)}" target="_blank" rel="noopener" aria-label="${aria}">${XICON}${label?`<span>${label}</span>`:''}</a>`;}
+function niceList(a){a=a.map(x=>x.toLowerCase());return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
+function spotText(s){return `${s.n} is on my radar today. ${niceList(s.f).replace(/^./,c=>c.toUpperCase())} all in play.\n\nLive geo risk map, free to use:`;}
+function wireText(w){const t=w.title.length>170?w.title.slice(0,167).trim()+'...':w.title;return `"${t}"\n\nSpotted on the Meridian market wire:`;}
 
 /* ---------- data ---------- */
 const FLOW={'Risk off':'t-red','Energy':'t-amber','Safe haven':'t-blue','Shipping premium':'t-amber','Chips supply':'t-amber','Defense':'t-red','Wheat and grain':'t-amber','Oil transit':'t-amber','Containers':'t-blue','Shipping':'t-blue','Trade':'t-blue'};
@@ -601,7 +688,7 @@ const SPOTS=[
   {n:'Panama Canal',lat:9,lng:-77,sev:'green',w:15,d:'Water levels and congestion here decide transit for US trade between oceans.',f:['Shipping','Trade']}
 ];
 const tags=f=>f.map(x=>`<span class="tag ${FLOW[x]||'t-blue'}">${x}</span>`).join('');
-$('spots').innerHTML=SPOTS.map((s,i)=>`<div class="spot rv" style="--d:${i*.06}s"><span class="pulse" style="background:${SEV[s.sev]};color:${SEV[s.sev]}"></span><h3>${s.n}</h3><p>${s.d}</p><div class="flows">${tags(s.f)}</div></div>`).join('');
+$('spots').innerHTML=SPOTS.map((s,i)=>`<div class="spot rv" style="--d:${i*.06}s"><span class="pulse" style="background:${SEV[s.sev]};color:${SEV[s.sev]}"></span><h3>${s.n}</h3><p>${s.d}</p><div class="flows">${tags(s.f)}</div>${xBtn(spotText(s),SITE+'/#hotspots','Share','Share '+s.n+' on X')}</div>`).join('');
 $('miniMap').innerHTML=SPOTS.slice(0,4).map(s=>`<div class="mini-row"><span>${s.n}</span><div class="bar"><i style="--w:${s.w}%;background:${SEV[s.sev]}"></i></div></div>`).join('');
 
 /* ---------- HUD cycle ---------- */
@@ -634,30 +721,104 @@ else{
 }
 
 /* ---------- marquee + prices ---------- */
-const P={btc:null,eth:null,sol:null,gold:null,fng:null};
+const P={};
 function fmt(v,d){return '$'+v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+const LOGOS={btc:'assets/logos/btc.svg',eth:'assets/logos/eth.svg',gold:'assets/logos/gold.svg',silver:'assets/logos/silver.svg',oil:'assets/logos/oil.svg'};
+function logoSrc(k){if(k==='torch')return (P.torch&&P.torch.logo)||'assets/logos/torch-fallback.svg';return LOGOS[k]||'';}
+function logoImg(k,c){const u=logoSrc(k);return u?`<img class="${c}" src="${u}" alt="" width="18" height="18" loading="lazy" onerror="this.style.visibility='hidden'">`:'';}
 function renderMq(){
   const items=[];
-  const a=(k,label,d)=>{const x=P[k];if(!x)return;items.push(`<div class="mq-item"><span class="k">${label}</span><span class="v">${fmt(x.p,d)}</span><span class="${x.c>=0?'up':'down'}">${x.c>=0?'+':''}${x.c.toFixed(2)}%</span></div>`);};
-  a('btc','BTC',0);a('eth','ETH',2);a('sol','SOL',2);a('gold','GOLD PAXG',0);
+  const a=(k,label,d)=>{const x=P[k];if(!x)return;items.push(`<div class="mq-item">${logoImg(k,'mq-logo')}<span class="k">${label}</span><span class="v">${fmt(x.p,d)}</span><span class="${x.c>=0?'up':'down'}">${x.c>=0?'+':''}${x.c.toFixed(2)}%</span></div>`);};
+  const t=P.torch;if(t)items.push(`<div class="mq-item">${logoImg('torch','mq-logo')}<span class="k">TORCH</span><span class="v">${pfmt(t.p)}</span><span class="${t.c>=0?'up':'down'}">${t.c>=0?'+':''}${t.c.toFixed(2)}%</span></div>`);
+  a('eth','ETH',2);a('btc','BTC',0);a('gold','GOLD',0);a('silver','SILVER',2);a('oil','OIL WTI',2);
   if(P.fng) items.push(`<div class="mq-item"><span class="k">Fear and Greed</span><span class="v">${P.fng.v}</span><span class="k">${P.fng.t}</span></div>`);
   SPOTS.forEach(s=>items.push(`<div class="mq-item"><span class="sev" style="background:${SEV[s.sev]};box-shadow:0 0 8px ${SEV[s.sev]}"></span><span>${s.n}</span><span class="k">${s.f.join(' / ')}</span></div>`));
   const html=items.join('');$('mq').innerHTML=html+html;
 }
+async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error(r.status);return r.json();}
+async function yf(sym,key,d){
+  try{
+    const j=await getJSON(PROXY+'/yf/'+encodeURIComponent(sym)+'?interval=30m&range=5d');
+    const res=j.chart.result[0],m=res.meta,closes=(res.indicators.quote[0].close||[]).filter(v=>v!=null);
+    const p=m.regularMarketPrice;
+    // 24h change vs close of previous trading day
+    const ts=res.timestamp||[];let ref=null;const cut=(ts[ts.length-1]||0)-86400;
+    for(let i=0;i<ts.length;i++){if(ts[i]>=cut&&res.indicators.quote[0].close[i]!=null){ref=res.indicators.quote[0].close[i];break;}}
+    P[key]={p,c:ref?((p-ref)/ref*100):0,d,spark:closes.slice(-48)};
+  }catch(e){}
+}
 async function prices(){
   try{
-    const syms=encodeURIComponent(JSON.stringify(['BTCUSDT','ETHUSDT','SOLUSDT','PAXGUSDT']));
+    const syms=encodeURIComponent(JSON.stringify(['BTCUSDT','ETHUSDT','PAXGUSDT']));
     const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+syms);if(!r.ok)throw 0;
     const m={};(await r.json()).forEach(x=>m[x.symbol]=x);
-    [['btc','BTCUSDT'],['eth','ETHUSDT'],['sol','SOLUSDT'],['gold','PAXGUSDT']].forEach(([k,s])=>P[k]={p:+m[s].lastPrice,c:+m[s].priceChangePercent});
+    [['btc','BTCUSDT'],['eth','ETHUSDT']].forEach(([k,s])=>P[k]={p:+m[s].lastPrice,c:+m[s].priceChangePercent});
+    P.paxg={p:+m.PAXGUSDT.lastPrice,c:+m.PAXGUSDT.priceChangePercent};
   }catch(e){
-    try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,pax-gold&vs_currencies=usd&include_24hr_change=true');const j=await r.json();
-      [['btc','bitcoin'],['eth','ethereum'],['sol','solana'],['gold','pax-gold']].forEach(([k,s])=>P[k]={p:j[s].usd,c:j[s].usd_24h_change||0});}catch(e2){}
+    try{const j=await getJSON('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,pax-gold&vs_currencies=usd&include_24hr_change=true');
+      [['btc','bitcoin'],['eth','ethereum'],['paxg','pax-gold']].forEach(([k,s])=>P[k]={p:j[s].usd,c:j[s].usd_24h_change||0});}catch(e2){}
   }
-  try{const r=await fetch('https://api.alternative.me/fng/?limit=1');const j=await r.json();P.fng={v:j.data[0].value,t:j.data[0].value_classification};}catch(e){}
-  renderMq();
+  try{
+    const j=await getJSON('https://api.dexscreener.com/latest/dex/tokens/'+TORCH_CA);
+    const pairs=(j.pairs||[]).filter(x=>x.baseToken&&x.baseToken.address.toLowerCase()===TORCH_CA.toLowerCase()).sort((a,b)=>((b.liquidity||{}).usd||0)-((a.liquidity||{}).usd||0));
+    if(pairs[0]) P.torch={p:+pairs[0].priceUsd,c:+((pairs[0].priceChange||{}).h24||0),logo:(pairs[0].info||{}).imageUrl||''};
+  }catch(e){}
+  await Promise.all([yf('GC=F','gold',0),yf('SI=F','silver',2),yf('CL=F','oil',2)]);
+  if(!P.gold&&P.paxg) P.gold=P.paxg;
+  try{const j=await getJSON('https://api.alternative.me/fng/?limit=1');P.fng={v:j.data[0].value,t:j.data[0].value_classification};}catch(e){}
+  renderMq();renderQuotes();
+}
+function pfmt(v){if(v>=1000)return fmt(v,0);if(v>=1)return fmt(v,2);if(v>=0.01)return fmt(v,4);return '$'+v.toPrecision(3);}
+function renderQuotes(){
+  const tl=$('ql-torch');if(tl&&P.torch&&P.torch.logo&&tl.src!==P.torch.logo)tl.src=P.torch.logo;
+  ['gold','silver','oil','torch'].forEach(k=>{
+    const x=P[k],v=$('q-'+k),c=$('qc-'+k);if(!v)return;
+    if(!x){v.textContent='n/a';c.textContent='';return;}
+    v.textContent=pfmt(x.p);c.textContent=(x.c>=0?'+':'')+x.c.toFixed(2)+'% 24h';c.className='q-c '+(x.c>=0?'up':'down');
+    const sp=$('sp-'+k);
+    if(sp&&x.spark&&x.spark.length>2){const a=x.spark,mn=Math.min(...a),mx=Math.max(...a),rg=mx-mn||1;
+      const pts=a.map((y,i)=>`${(i/(a.length-1)*100).toFixed(1)},${(28-(y-mn)/rg*26).toFixed(1)}`).join(' ');
+      const col=x.c>=0?'#3fe0a0':'#ff5d5d';
+      sp.innerHTML=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;}
+  });
 }
 renderMq();prices();setInterval(prices,60000);
+
+/* ---------- market wire ---------- */
+const WTAGS=[
+  ['gold','Gold','t-gold',/\bgold\b/i],
+  ['silver','Silver','t-silver',/\bsilver\b/i],
+  ['oil','Oil','t-amber',/\b(oil|crude|opec|brent|wti|lng)\b/i],
+  ['rates','Fed and rates','t-blue',/(federal reserve|\bfed\b|interest rate|rate cut|rate hike|inflation|\bcpi\b|\becb\b|treasury yields?)/i],
+  ['trade','Tariffs and sanctions','t-red',/(tariff|sanction|embargo|export ban|trade war)/i],
+  ['crypto','Crypto','t-green',/(bitcoin|crypto|ethereum|\bbtc\b|stablecoin)/i],
+  ['geo','Hotspots','t-red',/(hormuz|red sea|houthi|taiwan|ukraine|iran|suez|malacca)/i]
+];
+const JUNK=/(medal|golden globe|gold coast|olympic|silver screen|silverstone|cooking oil|essential oil|olive oil)/i;
+let WIRE=[],wf='all';
+function ago(s){const m=/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(s||'');if(!m)return '';
+  const t=Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6]),d=Math.max(0,(Date.now()-t)/60000);
+  return d<60?Math.round(d)+'m ago':Math.round(d/60)+'h ago';}
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderWire(){
+  const counts={all:WIRE.length};WTAGS.forEach(t=>counts[t[0]]=WIRE.filter(w=>w.tags.includes(t[0])).length);
+  $('wireFilters').innerHTML=[['all','All']].concat(WTAGS.map(t=>[t[0],t[1]])).filter(([k])=>k==='all'||counts[k]).map(([k,l])=>`<button class="wf" role="tab" aria-selected="${wf===k}" data-k="${k}">${l}<b>${counts[k]}</b></button>`).join('');
+  const list=WIRE.filter(w=>wf==='all'||w.tags.includes(wf)).slice(0,8);
+  $('wireList').innerHTML=list.length?list.map((w,i)=>`<li style="--i:${i}"><a class="wire-link" href="${esc(w.url)}" target="_blank" rel="noopener nofollow"><span class="wire-t">${esc(w.title)}</span><span class="wire-ago">${ago(w.time)}</span><span class="wire-m">${w.tags.map(k=>{const t=WTAGS.find(x=>x[0]===k);return `<span class="tag ${t[2]}">${t[1]}</span>`}).join('')}<span>${esc(w.source||'')}</span></span></a>${xBtn(wireText(w),SITE+'/#wire','','Share this headline on X')}</li>`).join(''):'<li class="wire-empty">No fresh headlines in this filter. Pick another one or check back in a few minutes.</li>';
+}
+$('wireFilters').addEventListener('click',e=>{const b=e.target.closest('.wf');if(!b)return;wf=b.dataset.k;renderWire();});
+async function loadWire(){
+  try{
+    const j=await getJSON(PROXY+'/wire');
+    WIRE=(j.items||[]).filter(w=>w.title&&!JUNK.test(w.title)).map(w=>({...w,tags:WTAGS.filter(t=>t[3].test(w.title)).map(t=>t[0])})).filter(w=>w.tags.length);
+    renderWire();
+    $('wireStamp').textContent='Live wire, updated '+new Date(j.updated||Date.now()).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  }catch(e){
+    if(!WIRE.length) $('wireList').innerHTML='<li class="wire-empty">The wire is reconnecting. Live news also runs inside the <a href="terminal/" style="color:var(--signal)">terminal</a>.</li>';
+    $('wireStamp').textContent='Reconnecting';
+  }
+}
+loadWire();setInterval(loadWire,5*60000);
 
 /* ---------- reveals + count up ---------- */
 function countUp(el){
