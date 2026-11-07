@@ -218,9 +218,10 @@ section{position:relative;padding:clamp(90px,12vw,170px) 0}
 /* hotspots */
 .hot{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(24px,4vw,60px);align-items:start}
 .radar{position:sticky;top:100px;border-radius:24px;overflow:hidden;aspect-ratio:16/10;border:1px solid var(--line-strong);box-shadow:0 40px 120px rgba(0,0,0,.6)}
-.radar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 26s ease-in-out infinite alternate;transform-origin:54% 42%}
+.radar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 26s ease-in-out infinite alternate;transform-origin:var(--rx,54.2%) var(--ry,42%);transition:opacity .45s ease}
+.radar img.swap{opacity:0}
 @keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.18)}}
-.radar-ring{position:absolute;left:54.2%;top:42%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none}
+.radar-ring{position:absolute;left:var(--rx,54.2%);top:var(--ry,42%);width:var(--rw,30%);transition:left .6s cubic-bezier(.2,.7,.2,1),top .6s cubic-bezier(.2,.7,.2,1),width .6s cubic-bezier(.2,.7,.2,1);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none}
 .radar-ring i{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,93,93,.8);animation:ping 2.8s ease-out infinite}
 .radar-ring i:nth-child(2){animation-delay:.9s}.radar-ring i:nth-child(3){animation-delay:1.8s}
 @keyframes ping{0%{transform:scale(.55);opacity:.9}100%{transform:scale(1.7);opacity:0}}
@@ -480,10 +481,10 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
         <p class="rv">Chokepoints, front lines, mines and policy desks where a single headline reprices oil, metals, freight, chips or safe havens.</p>
       </div>
       <div class="hot">
-        <div class="radar rv">
+        <div class="radar rv" id="radar">
           <img src="assets/hormuz.webp" alt="Night satellite view of the Strait of Hormuz with tankers and a red warning ring" width="1920" height="1080" loading="lazy">
           <div class="radar-ring" aria-hidden="true"><b></b><i></i><i></i><i></i></div>
-          <div class="radar-cap"><strong>Strait of Hormuz</strong><span>26.6N 56.3E</span></div>
+          <div class="radar-cap"><strong id="radarName">Strait of Hormuz</strong><span id="radarCoord">26.6N 56.3E</span></div>
         </div>
         <div><div class="wire-filters" id="spotFilters" role="tablist" aria-label="Filter hotspots by region"></div><div class="spot-list" id="spots"></div></div>
       </div>
@@ -717,11 +718,27 @@ const SPOTS=[
 const tags=f=>f.map(x=>`<span class="tag ${FLOW[x]||'t-blue'}">${x}</span>`).join('');
 const SGROUPS=['Middle East','Europe and Arctic','Asia','Americas','Africa','Commodities and policy'];
 let sg='Middle East';
+const RADAR={
+  'Middle East':{img:'assets/hormuz.webp',n:'Strait of Hormuz',c:'26.6N 56.3E',x:54.2,y:42,w:30},
+  'Europe and Arctic':{img:'assets/region-europe.webp',n:'Bosporus, Istanbul',c:'41.1N 29.0E',x:50,y:49.6,w:22},
+  'Asia':{img:'assets/region-asia.webp',n:'Taiwan Strait',c:'24.5N 119.5E',x:50,y:46.2,w:21.6},
+  'Americas':{img:'assets/region-americas.webp',n:'Panama Canal',c:'9.1N 79.7W',x:50,y:45.7,w:14},
+  'Africa':{img:'assets/region-africa.webp',n:'Central African copper belt',c:'10.7S 25.5E',x:49.5,y:47,w:35},
+  'Commodities and policy':{img:'assets/region-commodities.webp',n:'Gulf oil export hubs',c:'26.6N 50.2E',x:49.5,y:47,w:35}
+};
+Object.values(RADAR).forEach(v=>{const i=new Image();i.src=v.img;});
+function setRadar(g){
+  const v=RADAR[g],box=$('radar');if(!v||!box)return;
+  const img=box.querySelector('img');
+  box.style.setProperty('--rx',v.x+'%');box.style.setProperty('--ry',v.y+'%');box.style.setProperty('--rw',v.w+'%');
+  $('radarName').textContent=v.n;$('radarCoord').textContent=v.c;
+  if(img.getAttribute('src')!==v.img){img.classList.add('swap');setTimeout(()=>{img.src=v.img;img.alt='Night satellite style view: '+v.n;img.classList.remove('swap');},300);}
+}
 function renderSpots(){
   $('spotFilters').innerHTML=SGROUPS.map(g=>`<button class="wf" role="tab" aria-selected="${sg===g}" data-g="${g}">${g}<b>${SPOTS.filter(x=>x.g===g).length}</b></button>`).join('');
   $('spots').innerHTML=SPOTS.filter(x=>x.g===sg).map((s,i)=>`<div class="spot" style="animation:wirein .5s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:${i*50}ms"><span class="pulse" style="background:${SEV[s.sev]};color:${SEV[s.sev]}"></span><h3>${s.n}</h3><p>${s.d}</p><div class="flows">${tags(s.f)}</div>${xBtn(spotText(s),SITE+'/#hotspots','Share','Share '+s.n+' on X')}</div>`).join('');
 }
-$('spotFilters').addEventListener('click',e=>{const b=e.target.closest('.wf');if(!b)return;sg=b.dataset.g;renderSpots();});
+$('spotFilters').addEventListener('click',e=>{const b=e.target.closest('.wf');if(!b)return;sg=b.dataset.g;renderSpots();setRadar(sg);});
 renderSpots();
 $('miniMap').innerHTML=SPOTS.slice(0,4).map(s=>`<div class="mini-row"><span>${s.n}</span><div class="bar"><i style="--w:${s.w}%;background:${SEV[s.sev]}"></i></div></div>`).join('');
 
