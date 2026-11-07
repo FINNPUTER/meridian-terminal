@@ -788,23 +788,45 @@ const CLOCKS = [
 ];
 /* ── MUTABLE GEO/ECO DATA (overwritten by live APIs) ──────────  */
 let BILATERAL = [
-  {p:'US — Iran',     v:28,c:'#d04444'},
-  {p:'Israel — Iran', v:18,c:'#d08822'},
-  {p:'US — China',    v:11,c:'#c09818'},
-  {p:'NATO — Russia', v:8, c:'#2888d8'},
+  {p:'US / Iran',     v:28,c:'#d04444'},
+  {p:'Israel / Iran', v:18,c:'#d08822'},
+  {p:'US / China',    v:11,c:'#c09818'},
+  {p:'NATO / Russia', v:8, c:'#2888d8'},
 ];
 let HOTSPOTS = [
-  {lng:56, lat:26, c:'#d04444',l:'Persian Gulf', r:84},
-  {lng:43, lat:13, c:'#d04444',l:'Red Sea',      r:71},
-  {lng:33, lat:49, c:'#d08822',l:'Ukraine',      r:58},
-  {lng:121,lat:24, c:'#d08822',l:'Taiwan Strait',r:62},
-  {lng:104,lat:1,  c:'#14a888',l:'Malacca',      r:28},
-  {lng:32, lat:30, c:'#c09818',l:'Suez Canal',   r:22},
-  {lng:-77,lat:9,  c:'#14a888',l:'Panama Canal', r:15},
+  {lng:56, lat:26, c:'#d04444', l:"Persian Gulf", r:30},
+  {lng:43, lat:13, c:'#d04444', l:"Red Sea (Houthi)", r:25},
+  {lng:51.7, lat:33.7, c:'#d04444', l:"Iran nuclear program", r:25},
+  {lng:35.3, lat:32.6, c:'#d04444', l:"Levant (Israel, Gaza, Lebanon)", r:30},
+  {lng:32.5, lat:30, c:'#d08822', l:"Suez Canal", r:10},
+  {lng:33, lat:49, c:'#d04444', l:"Ukraine Front", r:25},
+  {lng:34, lat:43, c:'#d08822', l:"Black Sea and Bosporus", r:15},
+  {lng:19, lat:57, c:'#d08822', l:"Baltic Sea", r:15},
+  {lng:-40, lat:72, c:'#14a888', l:"Greenland and Arctic", r:10},
+  {lng:121, lat:24, c:'#d08822', l:"Taiwan Strait", r:20},
+  {lng:114, lat:12, c:'#d08822', l:"South China Sea", r:15},
+  {lng:127, lat:38.5, c:'#d08822', l:"Korean Peninsula", r:15},
+  {lng:75, lat:34, c:'#d08822', l:"Kashmir (India, Pakistan)", r:15},
+  {lng:104, lat:1, c:'#14a888', l:"Malacca Strait", r:10},
+  {lng:97.4, lat:25.5, c:'#d08822', l:"Myanmar", r:15},
+  {lng:52, lat:47, c:'#14a888', l:"Kazakhstan and Caspian", r:10},
+  {lng:118, lat:-2, c:'#14a888', l:"Indonesia", r:10},
+  {lng:-79.6, lat:9, c:'#14a888', l:"Panama Canal", r:10},
+  {lng:-66, lat:8, c:'#d08822', l:"Venezuela and Caribbean", r:15},
+  {lng:-103, lat:29, c:'#d08822', l:"Mexico and US border", r:15},
+  {lng:-68, lat:-22, c:'#14a888', l:"Andes metals (Chile, Peru, Argentina, Bolivia)", r:10},
+  {lng:17, lat:27, c:'#d08822', l:"Libya", r:15},
+  {lng:23, lat:-4, c:'#d08822', l:"DR Congo", r:15},
+  {lng:-1, lat:16, c:'#d08822', l:"Sahel (Mali, Niger, Burkina Faso)", r:15},
+  {lng:28, lat:-26, c:'#14a888', l:"South Africa", r:10},
+  {lng:-11, lat:10, c:'#14a888', l:"Guinea", r:10},
+  {lng:6, lat:5, c:'#14a888', l:"Nigeria", r:10},
+  {lng:46.7, lat:24.7, c:'#d08822', l:"OPEC+ and Saudi Arabia", r:15},
+  {lng:116.4, lat:39.9, c:'#d08822', l:"China export controls", r:15},
 ];
 let GEO_EVENTS = [
   {r:'Persian Gulf',        s:74,c:'#d04444',tags:['MIDDLE EAST','WAR','CONFLICT ZONE'],  flows:['RISK-OFF','ENERGY','SAFE HAVEN'],       desc:'Conflict around key transit routes lifting energy risk premium. Oil/LNG flows disrupted. Defensive asset rotation active.'},
-  {r:'Red Sea — Houthi',    s:65,c:'#d04444',tags:['MARITIME','HOUTHI','MIDDLE EAST'],   flows:['SHIPPING PREMIUM','ENERGY'],             desc:'Continued drone/missile attacks on commercial vessels. Suez rerouting persists. Shipping costs elevated +34%.'},
+  {r:'Red Sea (Houthi)',    s:65,c:'#d04444',tags:['MARITIME','HOUTHI','MIDDLE EAST'],   flows:['SHIPPING PREMIUM','ENERGY'],             desc:'Continued drone/missile attacks on commercial vessels. Suez rerouting persists. Shipping costs elevated +34%.'},
   {r:'Taiwan Strait',       s:62,c:'#d08822',tags:['INDO-PACIFIC','MILITARY','CHINA'],   flows:['RISK-OFF','SEMI SUPPLY CHAIN','DEFENSE'],desc:'PLA carrier group exercises ongoing. Semiconductor supply chain risk elevated.'},
   {r:'Ukraine Front',       s:58,c:'#d08822',tags:['EUROPE','WAR','NATO'],               flows:['RISK-OFF','ENERGY','WHEAT/GRAIN'],        desc:'Frontline activity near Kharkiv. EU energy contingency planning active. Grain corridor negotiations stalled.'},
 ];
@@ -971,11 +993,11 @@ async function buildMap(){
       const dot=g.append('circle').attr('cx',x).attr('cy',y).attr('r',5)
         .attr('fill',h.c).attr('opacity',.9).attr('filter','url(#hotglow)');
       // Score label on marker
-      g.append('text').attr('x',x).attr('y',y+3).attr('text-anchor','middle')
+      const txt=g.append('text').attr('x',x).attr('y',y+3).attr('text-anchor','middle')
         .attr('fill','#fff').attr('font-size',7).attr('font-weight',700).attr('font-family','IBM Plex Mono')
         .attr('pointer-events','none').text(h.r);
-      const title=g.append('title').text(`${h.l} — Risk ${h.r}`);
-      _hotspotEls[h.l]={dot,ring,title,g};
+      const title=g.append('title').text(`${h.l}, risk ${h.r}`);
+      _hotspotEls[h.l]={dot,ring,title,g,txt};
       // Click → show tooltip
       g.on('click',function(event){
         event.stopPropagation();
@@ -1556,32 +1578,43 @@ function buildSupply(){ rebuildSupply(); }
 ═══════════════════════════════════════════════════════════════ */
 
 const GEO_REGIONS = [
-  {id:'persian-gulf', label:'Persian Gulf',      kw:'Iran conflict military',
-   lat:26,lng:56, tags:['MIDDLE EAST','WAR','CONFLICT ZONE'], flows:['RISK-OFF','ENERGY','SAFE HAVEN'],
-   choke:'Strait of Hormuz', chokeFlow:'21%', chokeCargo:'OIL / LNG', baseRisk:30},
-  {id:'red-sea',      label:'Red Sea — Houthi',  kw:'Houthi Red Sea attack',
-   lat:13,lng:43, tags:['MARITIME','HOUTHI','MIDDLE EAST'], flows:['SHIPPING PREMIUM','ENERGY'],
-   choke:'Bab el-Mandeb', chokeFlow:'8%', chokeCargo:'OIL / LNG', baseRisk:25},
-  {id:'taiwan',       label:'Taiwan Strait',      kw:'Taiwan China military',
-   lat:24,lng:121, tags:['INDO-PACIFIC','MILITARY','CHINA'], flows:['RISK-OFF','SEMI SUPPLY CHAIN','DEFENSE'],
-   choke:'Taiwan Strait', chokeFlow:'35%', chokeCargo:'Containers/Semi', baseRisk:20},
-  {id:'ukraine',      label:'Ukraine Front',      kw:'Ukraine war frontline',
-   lat:49,lng:33, tags:['EUROPE','WAR','NATO'], flows:['RISK-OFF','ENERGY','WHEAT/GRAIN'],
-   choke:null, baseRisk:25},
-  {id:'malacca',      label:'Malacca Strait',     kw:'Malacca strait shipping',
-   lat:1,lng:104, tags:['INDO-PACIFIC','MARITIME','TRADE'], flows:['SHIPPING','OIL TRANSIT'],
-   choke:'Malacca Strait', chokeFlow:'23%', chokeCargo:'Oil/Containers', baseRisk:10},
-  {id:'suez',         label:'Suez Canal',          kw:'Suez Canal disruption',
-   lat:30,lng:32, tags:['MIDDLE EAST','MARITIME','TRADE'], flows:['SHIPPING','CONTAINERS'],
-   choke:'Suez Canal', chokeFlow:'12%', chokeCargo:'Containers/Oil', baseRisk:10},
+  {id:"persian-gulf", label:"Persian Gulf", group:"Middle East", kw:"Iran conflict military", lat:26, lng:56, tags:["MIDDLE EAST", "WAR", "CONFLICT ZONE"], flows:["RISK-OFF", "ENERGY", "SAFE HAVEN"], choke:"Strait of Hormuz", chokeFlow:"21%", chokeCargo:"OIL / LNG", baseRisk:30},
+  {id:"red-sea", label:"Red Sea (Houthi)", group:"Middle East", kw:"Houthi Red Sea attack", lat:13, lng:43, tags:["MARITIME", "HOUTHI", "MIDDLE EAST"], flows:["SHIPPING PREMIUM", "ENERGY"], choke:"Bab el-Mandeb", chokeFlow:"8%", chokeCargo:"OIL / LNG", baseRisk:25},
+  {id:"iran-nuclear", label:"Iran nuclear program", group:"Middle East", kw:"Iran nuclear enrichment IAEA", lat:33.7, lng:51.7, tags:["MIDDLE EAST", "NUCLEAR", "SANCTIONS"], flows:["RISK-OFF", "OIL", "GOLD"], choke:null, baseRisk:25},
+  {id:"levant", label:"Levant (Israel, Gaza, Lebanon)", group:"Middle East", kw:"Israel Gaza Lebanon strikes", lat:32.6, lng:35.3, tags:["MIDDLE EAST", "WAR"], flows:["RISK-OFF", "OIL", "DEFENSE"], choke:null, baseRisk:30},
+  {id:"suez", label:"Suez Canal", group:"Middle East", kw:"Suez Canal disruption", lat:30, lng:32.5, tags:["MIDDLE EAST", "MARITIME", "TRADE"], flows:["SHIPPING", "CONTAINERS"], choke:"Suez Canal", chokeFlow:"12%", chokeCargo:"Containers/Oil", baseRisk:10},
+  {id:"ukraine", label:"Ukraine Front", group:"Europe and Arctic", kw:"Ukraine war frontline", lat:49, lng:33, tags:["EUROPE", "WAR", "NATO"], flows:["RISK-OFF", "ENERGY", "WHEAT/GRAIN"], choke:null, baseRisk:25},
+  {id:"black-sea", label:"Black Sea and Bosporus", group:"Europe and Arctic", kw:"Black Sea shipping Bosporus grain", lat:43, lng:34, tags:["EUROPE", "MARITIME", "RUSSIA"], flows:["WHEAT/GRAIN", "OIL", "SHIPPING"], choke:null, baseRisk:15},
+  {id:"baltic", label:"Baltic Sea", group:"Europe and Arctic", kw:"Baltic Sea cable sabotage Russia NATO", lat:57, lng:19, tags:["EUROPE", "NATO", "INFRASTRUCTURE"], flows:["ENERGY", "GAS", "DEFENSE"], choke:null, baseRisk:15},
+  {id:"arctic", label:"Greenland and Arctic", group:"Europe and Arctic", kw:"Greenland Arctic rare earths", lat:72, lng:-40, tags:["ARCTIC", "RESOURCES"], flows:["RARE EARTHS", "SHIPPING"], choke:null, baseRisk:10},
+  {id:"taiwan", label:"Taiwan Strait", group:"Asia", kw:"Taiwan China military", lat:24, lng:121, tags:["INDO-PACIFIC", "MILITARY", "CHINA"], flows:["RISK-OFF", "SEMI SUPPLY CHAIN", "DEFENSE"], choke:"Taiwan Strait", chokeFlow:"35%", chokeCargo:"Containers/Semi", baseRisk:20},
+  {id:"south-china-sea", label:"South China Sea", group:"Asia", kw:"South China Sea Philippines China coast guard", lat:12, lng:114, tags:["INDO-PACIFIC", "MARITIME", "CHINA"], flows:["SHIPPING", "RISK-OFF", "DEFENSE"], choke:null, baseRisk:15},
+  {id:"korea", label:"Korean Peninsula", group:"Asia", kw:"North Korea missile military", lat:38.5, lng:127, tags:["INDO-PACIFIC", "MILITARY", "NUCLEAR"], flows:["RISK-OFF", "CHIPS SUPPLY", "KRW"], choke:null, baseRisk:15},
+  {id:"kashmir", label:"Kashmir (India, Pakistan)", group:"Asia", kw:"Kashmir India Pakistan military", lat:34, lng:75, tags:["SOUTH ASIA", "MILITARY", "NUCLEAR"], flows:["RISK-OFF", "INR"], choke:null, baseRisk:15},
+  {id:"malacca", label:"Malacca Strait", group:"Asia", kw:"Malacca strait shipping", lat:1, lng:104, tags:["INDO-PACIFIC", "MARITIME", "TRADE"], flows:["SHIPPING", "OIL TRANSIT"], choke:"Malacca Strait", chokeFlow:"23%", chokeCargo:"Oil/Containers", baseRisk:10},
+  {id:"myanmar", label:"Myanmar", group:"Asia", kw:"Myanmar rare earth Kachin conflict", lat:25.5, lng:97.4, tags:["SOUTH EAST ASIA", "CIVIL WAR", "RESOURCES"], flows:["RARE EARTHS", "SUPPLY CHAIN"], choke:null, baseRisk:15},
+  {id:"kazakhstan", label:"Kazakhstan and Caspian", group:"Asia", kw:"Kazakhstan uranium CPC pipeline Caspian", lat:47, lng:52, tags:["CENTRAL ASIA", "ENERGY", "RESOURCES"], flows:["URANIUM", "OIL"], choke:null, baseRisk:10},
+  {id:"indonesia", label:"Indonesia", group:"Asia", kw:"Indonesia nickel export ban", lat:-2, lng:118, tags:["SOUTH EAST ASIA", "RESOURCES", "POLICY"], flows:["NICKEL", "EV BATTERIES"], choke:null, baseRisk:10},
+  {id:"panama", label:"Panama Canal", group:"Americas", kw:"Panama Canal transit drought", lat:9, lng:-79.6, tags:["AMERICAS", "MARITIME", "TRADE"], flows:["SHIPPING", "TRADE"], choke:null, baseRisk:10},
+  {id:"venezuela", label:"Venezuela and Caribbean", group:"Americas", kw:"Venezuela oil sanctions", lat:8, lng:-66, tags:["AMERICAS", "SANCTIONS", "OIL"], flows:["OIL", "SANCTIONS"], choke:null, baseRisk:15},
+  {id:"mexico", label:"Mexico and US border", group:"Americas", kw:"Mexico tariffs US trade border", lat:29, lng:-103, tags:["AMERICAS", "TRADE", "POLICY"], flows:["TARIFFS", "MXN", "TRADE"], choke:null, baseRisk:15},
+  {id:"andes", label:"Andes metals (Chile, Peru, Argentina, Bolivia)", group:"Americas", kw:"Chile Peru copper mine strike lithium", lat:-22, lng:-68, tags:["AMERICAS", "MINING", "RESOURCES"], flows:["COPPER", "LITHIUM"], choke:null, baseRisk:10},
+  {id:"libya", label:"Libya", group:"Africa", kw:"Libya oil field shutdown", lat:27, lng:17, tags:["AFRICA", "CIVIL CONFLICT", "OIL"], flows:["OIL"], choke:null, baseRisk:15},
+  {id:"drc", label:"DR Congo", group:"Africa", kw:"Congo cobalt copper mining conflict", lat:-4, lng:23, tags:["AFRICA", "CONFLICT", "MINING"], flows:["COBALT", "COPPER"], choke:null, baseRisk:15},
+  {id:"sahel", label:"Sahel (Mali, Niger, Burkina Faso)", group:"Africa", kw:"Mali Niger Burkina Faso junta gold uranium", lat:16, lng:-1, tags:["AFRICA", "COUP", "MINING"], flows:["GOLD", "URANIUM"], choke:null, baseRisk:15},
+  {id:"south-africa", label:"South Africa", group:"Africa", kw:"South Africa platinum mining power", lat:-26, lng:28, tags:["AFRICA", "MINING", "ENERGY"], flows:["PLATINUM", "PALLADIUM", "GOLD"], choke:null, baseRisk:10},
+  {id:"guinea", label:"Guinea", group:"Africa", kw:"Guinea bauxite Simandou", lat:10, lng:-11, tags:["AFRICA", "MINING", "RESOURCES"], flows:["ALUMINIUM", "IRON ORE"], choke:null, baseRisk:10},
+  {id:"nigeria", label:"Nigeria", group:"Africa", kw:"Nigeria oil Niger Delta pipeline", lat:5, lng:6, tags:["AFRICA", "OIL", "SECURITY"], flows:["OIL"], choke:null, baseRisk:10},
+  {id:"opec", label:"OPEC+ and Saudi Arabia", group:"Commodities and policy", kw:"OPEC+ output Saudi oil production", lat:24.7, lng:46.7, tags:["ENERGY", "POLICY"], flows:["OIL", "ENERGY", "INFLATION"], choke:null, baseRisk:15},
+  {id:"china-controls", label:"China export controls", group:"Commodities and policy", kw:"China export controls rare earths gallium", lat:39.9, lng:116.4, tags:["CHINA", "POLICY", "RESOURCES"], flows:["RARE EARTHS", "CHIPS", "DEFENSE"], choke:null, baseRisk:15},
 ];
 
 const BILAT_QUERIES = [
-  {p:'US — Iran',      kw:'United States Iran sanctions'},
-  {p:'Israel — Iran',  kw:'Israel Iran conflict'},
-  {p:'US — China',     kw:'US China trade tensions'},
-  {p:'NATO — Russia',  kw:'NATO Russia tensions'},
-  {p:'India — Pakistan',kw:'India Pakistan border'},
+  {p:'US / Iran',      kw:'United States Iran sanctions'},
+  {p:'Israel / Iran',  kw:'Israel Iran conflict'},
+  {p:'US / China',     kw:'US China trade tensions'},
+  {p:'NATO / Russia',  kw:'NATO Russia tensions'},
+  {p:'India / Pakistan',kw:'India Pakistan border'},
   {p:'North Korea',    kw:'North Korea missile'},
 ];
 
@@ -1624,6 +1657,9 @@ async function fetchGDELT(query){
     return {count:articles.length, articles:articles.slice(0,5)};
   }
   
+  if(PROXY_URL){
+    try{ return await tryUrl(proxied.shift()); }catch{}
+  }
   try{
     return await Promise.any(proxied.map(u=>tryUrl(u)));
   }catch{
@@ -1633,9 +1669,13 @@ async function fetchGDELT(query){
 
 async function computeGeoRisks(){
   console.log('[MERIDIAN] Computing live geo risk scores via GDELT…');
-  const regionResults=await Promise.allSettled(
-    GEO_REGIONS.map(reg=>fetchGDELT(reg.kw).then(r=>({...reg,result:r})))
-  );
+  const regionResults=[];
+  for(let i=0;i<GEO_REGIONS.length;i+=6){
+    const batch=await Promise.allSettled(
+      GEO_REGIONS.slice(i,i+6).map(reg=>fetchGDELT(reg.kw).then(r=>({...reg,result:r})))
+    );
+    regionResults.push(...batch);
+  }
 
   const newEvents=[];
   const newHotspots=[];
@@ -1654,7 +1694,7 @@ async function computeGeoRisks(){
 
     const col=sCol(score);
     const topHeadlines=result?result.articles.slice(0,3).map(a=>a.title||'').filter(Boolean):[];
-    const desc=topHeadlines.length?topHeadlines.join(' · ').slice(0,200):`${count} articles in last 24h — ${sLbl(score).toLowerCase()} activity level.`;
+    const desc=topHeadlines.length?topHeadlines.join(' · ').slice(0,200):`${count} articles in last 24h, ${sLbl(score).toLowerCase()} activity level.`;
 
     newEvents.push({r:reg.label, s:score, c:col, tags:reg.tags, flows:reg.flows, desc, articleCount:count});
     newHotspots.push({lng:reg.lng, lat:reg.lat, c:col, l:reg.label, r:score});
@@ -1668,7 +1708,8 @@ async function computeGeoRisks(){
     totalRisk+=score;riskCount++;
   });
 
-  if(newEvents.length>=2){
+  const liveCount=regionResults.filter(x=>x.status==='fulfilled'&&x.value.result).length;
+  if(newEvents.length>=2&&liveCount>=3){
     // Sort by score descending
     newEvents.sort((a,b)=>b.s-a.s);
     newChokepoints.sort((a,b)=>b.r-a.r);
@@ -1742,7 +1783,8 @@ function updateMapHotspots(){
     if(!el)return;
     el.dot.transition().duration(800).attr('fill',h.c);
     el.ring.attr('stroke',h.c);
-    el.title.text(`${h.l} — Risk ${h.r} (LIVE)`);
+    el.title.text(`${h.l}, risk ${h.r} (live)`);
+    if(el.txt)el.txt.text(h.r);
   });
 }
 
@@ -1988,7 +2030,7 @@ function showMapTooltip(h,x,y){
   const ev=GEO_EVENTS.find(e=>e.r===h.l);
   const score=h.r||0;
   const col=sCol(score);
-  const articles=ev?.articleCount||'—';
+  const articles=ev?.articleCount||'n/a';
   const desc=ev?.desc||'No details available.';
   const tags=ev?.tags||[];
   

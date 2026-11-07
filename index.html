@@ -398,7 +398,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
     <div class="sweep"></div>
 
     <div class="wrap">
-      <div class="eyebrow fade"><span class="dot"></span><span><b>Live</b> &nbsp;Tracking 7 hotspots that move markets</span></div>
+      <div class="eyebrow fade"><span class="dot"></span><span><b>Live</b> &nbsp;Tracking 29 hotspots that move markets</span></div>
       <h1 id="heroTitle"><span class="wd">See</span> <span class="wd">the</span> <span class="wd">world</span> <span class="wd">move</span> <span class="wd">before</span> <span class="wd">the</span> <span class="wd glow-word">chart</span> <span class="wd glow-word">does.</span></h1>
       <p class="lead fade" style="--d:.75s">Meridian is a live terminal that reads <strong>conflict, chokepoints and sanctions</strong> around the globe and maps them to the assets they hit: oil, gold, bonds and crypto.</p>
       <div class="cta-row fade" style="--d:.9s">
@@ -423,8 +423,8 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
   <section style="padding-bottom:0">
     <div class="wrap">
       <div class="stats rv">
-        <div class="stat"><div class="stat-v" data-count="7">0</div><div class="stat-k">Hotspots scored around the clock</div></div>
-        <div class="stat"><div class="stat-v" data-count="4">0</div><div class="stat-k">Bilateral tension pairs monitored</div></div>
+        <div class="stat"><div class="stat-v" data-count="29">0</div><div class="stat-k">Hotspots scored around the clock</div></div>
+        <div class="stat"><div class="stat-v" data-count="6">0</div><div class="stat-k">Bilateral tension pairs monitored</div></div>
         <div class="stat"><div class="stat-v" data-count="7">0</div><div class="stat-k">Newsrooms in one feed</div></div>
         <div class="stat"><div class="stat-v" data-count="5">0</div><div class="stat-k">Live TV channels built in</div></div>
         <div class="stat"><div class="stat-v"><span data-count="24">0</span><small>h</small></div><div class="stat-k">Rolling window for every score</div></div>
@@ -476,8 +476,8 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
   <section id="hotspots" style="padding-top:0">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="split">Seven places that can move your portfolio overnight.</h2>
-        <p class="rv">Chokepoints and front lines where a single headline reprices oil, freight, chips or safe havens.</p>
+        <h2 class="split">29 places that can move your portfolio overnight.</h2>
+        <p class="rv">Chokepoints, front lines, mines and policy desks where a single headline reprices oil, metals, freight, chips or safe havens.</p>
       </div>
       <div class="hot">
         <div class="radar rv">
@@ -485,7 +485,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
           <div class="radar-ring" aria-hidden="true"><b></b><i></i><i></i><i></i></div>
           <div class="radar-cap"><strong>Strait of Hormuz</strong><span>26.6N 56.3E</span></div>
         </div>
-        <div class="spot-list" id="spots"></div>
+        <div><div class="wire-filters" id="spotFilters" role="tablist" aria-label="Filter hotspots by region"></div><div class="spot-list" id="spots"></div></div>
       </div>
     </div>
   </section>
@@ -527,7 +527,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
         <article class="card c-2 rv" style="--d:.08s">
           <div class="ico"><img src="assets/icons/shield.webp" alt="" width="256" height="256" loading="lazy"></div>
           <h3>Bilateral threat monitor</h3>
-          <p>Tension readings for the pairs that matter most: US and Iran, Israel and Iran, US and China, NATO and Russia.</p>
+          <p>Tension readings for the pairs that matter most: US and Iran, Israel and Iran, US and China, NATO and Russia, India and Pakistan, plus North Korea.</p>
         </article>
         <article class="card c-2 rv" style="--d:.16s">
           <div class="ico"><img src="assets/icons/binoculars.webp" alt="" width="256" height="256" loading="lazy"></div>
@@ -681,19 +681,48 @@ function spotText(s){return `${s.n} is on my radar today. ${niceList(s.f).replac
 function wireText(w){const t=w.title.length>170?w.title.slice(0,167).trim()+'...':w.title;return `"${t}"\n\nSpotted on the Meridian market wire:`;}
 
 /* ---------- data ---------- */
-const FLOW={'Risk off':'t-red','Energy':'t-amber','Safe haven':'t-blue','Shipping premium':'t-amber','Chips supply':'t-amber','Defense':'t-red','Wheat and grain':'t-amber','Oil transit':'t-amber','Containers':'t-blue','Shipping':'t-blue','Trade':'t-blue'};
+const FLOW={'Risk off':'t-red','Defense':'t-red','Sanctions':'t-red','Tariffs':'t-red','Energy':'t-amber','Oil':'t-amber','Gas':'t-amber','Oil transit':'t-amber','Shipping premium':'t-amber','Chips supply':'t-amber','Wheat and grain':'t-amber','Rare earths':'t-amber','Uranium':'t-amber','Copper':'t-amber','Lithium':'t-amber','Cobalt':'t-amber','Nickel':'t-amber','EV batteries':'t-amber','Platinum':'t-amber','Palladium':'t-amber','Aluminium':'t-amber','Iron ore':'t-amber','Supply chain':'t-amber','Gold':'t-gold','Safe haven':'t-blue','Shipping':'t-blue','Containers':'t-blue','Trade':'t-blue','Won':'t-blue','Rupee':'t-blue','Peso':'t-blue','Inflation':'t-blue'};
 const SEV={red:'#ff5d5d',amber:'#f0b44c',green:'#3fe0a0'};
 const SPOTS=[
-  {n:'Persian Gulf',lat:26,lng:56,sev:'red',w:84,d:'Strait of Hormuz. A large share of the world\'s seaborne oil and LNG passes through here.',f:['Risk off','Energy','Safe haven']},
-  {n:'Red Sea',lat:13,lng:43,sev:'red',w:71,d:'Bab el-Mandeb. Attacks on shipping force reroutes around Africa and lift freight costs.',f:['Shipping premium','Energy']},
-  {n:'Taiwan Strait',lat:24,lng:121,sev:'amber',w:62,d:'The center of global chip production. Any escalation hits semiconductors first.',f:['Risk off','Chips supply','Defense']},
-  {n:'Ukraine',lat:49,lng:33,sev:'amber',w:58,d:'Front line activity feeds straight into European energy and grain prices.',f:['Risk off','Energy','Wheat and grain']},
-  {n:'Malacca Strait',lat:1,lng:104,sev:'green',w:28,d:'The main sea route between the Indian Ocean and the Pacific.',f:['Shipping','Oil transit']},
-  {n:'Suez Canal',lat:30,lng:32,sev:'amber',w:22,d:'The link between Europe and Asia for containers and oil.',f:['Shipping','Containers']},
-  {n:'Panama Canal',lat:9,lng:-77,sev:'green',w:15,d:'Water levels and congestion here decide transit for US trade between oceans.',f:['Shipping','Trade']}
+  {n:"Persian Gulf",g:"Middle East",lat:26,lng:56,sev:'red',w:78,d:"Strait of Hormuz. A large share of the world's seaborne oil and LNG passes through here.",f:["Risk off", "Energy", "Safe haven"]},
+  {n:"Red Sea (Houthi)",g:"Middle East",lat:13,lng:43,sev:'red',w:78,d:"Bab el-Mandeb. Attacks on shipping force reroutes around Africa and lift freight costs.",f:["Shipping premium", "Energy"]},
+  {n:"Iran nuclear program",g:"Middle East",lat:33.7,lng:51.7,sev:'red',w:78,d:"Strikes, sanctions or talks around enrichment move oil and gold within minutes.",f:["Risk off", "Oil", "Gold"]},
+  {n:"Levant (Israel, Gaza, Lebanon)",g:"Middle East",lat:32.6,lng:35.3,sev:'red',w:78,d:"Escalation here tends to spill into the wider region and the oil price.",f:["Risk off", "Oil", "Defense"]},
+  {n:"Suez Canal",g:"Middle East",lat:30,lng:32.5,sev:'amber',w:55,d:"The link between Europe and Asia for containers and oil.",f:["Shipping", "Containers"]},
+  {n:"Ukraine Front",g:"Europe and Arctic",lat:49,lng:33,sev:'red',w:78,d:"Front line activity feeds straight into European energy and grain prices.",f:["Risk off", "Energy", "Wheat and grain"]},
+  {n:"Black Sea and Bosporus",g:"Europe and Arctic",lat:43,lng:34,sev:'amber',w:55,d:"Grain and Russian oil leave through the Turkish Straits. Any threat to shipping shows up in prices.",f:["Wheat and grain", "Oil", "Shipping"]},
+  {n:"Baltic Sea",g:"Europe and Arctic",lat:57,lng:19,sev:'amber',w:55,d:"Undersea cables and pipelines between NATO states and Russia. Incidents hit gas and defense names.",f:["Energy", "Gas", "Defense"]},
+  {n:"Greenland and Arctic",g:"Europe and Arctic",lat:72,lng:-40,sev:'green',w:28,d:"Rare earth deposits, new sea routes and great power interest in the far north.",f:["Rare earths", "Shipping"]},
+  {n:"Taiwan Strait",g:"Asia",lat:24,lng:121,sev:'amber',w:55,d:"The center of global chip production. Any escalation hits semiconductors first.",f:["Risk off", "Chips supply", "Defense"]},
+  {n:"South China Sea",g:"Asia",lat:12,lng:114,sev:'amber',w:55,d:"One of the busiest trade routes on earth, with constant standoffs between coast guards.",f:["Shipping", "Risk off", "Defense"]},
+  {n:"Korean Peninsula",g:"Asia",lat:38.5,lng:127,sev:'amber',w:55,d:"Missile tests and border incidents next to the memory chip makers of the world.",f:["Risk off", "Chips supply", "Won"]},
+  {n:"Kashmir (India, Pakistan)",g:"Asia",lat:34,lng:75,sev:'amber',w:55,d:"Two nuclear powers on one disputed border. Flare ups shake Asian risk appetite.",f:["Risk off", "Rupee"]},
+  {n:"Malacca Strait",g:"Asia",lat:1,lng:104,sev:'green',w:28,d:"The main sea route between the Indian Ocean and the Pacific.",f:["Shipping", "Oil transit"]},
+  {n:"Myanmar",g:"Asia",lat:25.5,lng:97.4,sev:'amber',w:55,d:"Civil war in a key mining region for heavy rare earths.",f:["Rare earths", "Supply chain"]},
+  {n:"Kazakhstan and Caspian",g:"Asia",lat:47,lng:52,sev:'green',w:28,d:"The world's largest uranium producer, plus an oil pipeline that runs to the Black Sea.",f:["Uranium", "Oil"]},
+  {n:"Indonesia",g:"Asia",lat:-2,lng:118,sev:'green',w:28,d:"Export rules on nickel reshape the battery metals market.",f:["Nickel", "EV batteries"]},
+  {n:"Panama Canal",g:"Americas",lat:9,lng:-79.6,sev:'green',w:28,d:"Water levels and congestion decide transit for trade between the Atlantic and the Pacific.",f:["Shipping", "Trade"]},
+  {n:"Venezuela and Caribbean",g:"Americas",lat:8,lng:-66,sev:'amber',w:55,d:"Huge heavy oil reserves under shifting US sanctions.",f:["Oil", "Sanctions"]},
+  {n:"Mexico and US border",g:"Americas",lat:29,lng:-103,sev:'amber',w:55,d:"The largest trading partner of the US. Tariff headlines move the peso and supply chains.",f:["Tariffs", "Peso", "Trade"]},
+  {n:"Andes metals (Chile, Peru, Argentina, Bolivia)",g:"Americas",lat:-22,lng:-68,sev:'green',w:28,d:"Copper mines and the lithium triangle. Strikes and new mining rules move both metals.",f:["Copper", "Lithium"]},
+  {n:"Libya",g:"Africa",lat:27,lng:17,sev:'amber',w:55,d:"Oil output can drop sharply overnight when rival factions fight over fields and ports.",f:["Oil"]},
+  {n:"DR Congo",g:"Africa",lat:-4,lng:23,sev:'amber',w:55,d:"The main source of cobalt, plus major copper output, in a region with ongoing fighting.",f:["Cobalt", "Copper"]},
+  {n:"Sahel (Mali, Niger, Burkina Faso)",g:"Africa",lat:16,lng:-1,sev:'amber',w:55,d:"Military governments rewriting the rules for gold and uranium mines.",f:["Gold", "Uranium"]},
+  {n:"South Africa",g:"Africa",lat:-26,lng:28,sev:'green',w:28,d:"The world's biggest platinum producer. Power cuts and strikes hit supply.",f:["Platinum", "Palladium", "Gold"]},
+  {n:"Guinea",g:"Africa",lat:10,lng:-11,sev:'green',w:28,d:"A top bauxite exporter and home of the Simandou iron ore project.",f:["Aluminium", "Iron ore"]},
+  {n:"Nigeria",g:"Africa",lat:5,lng:6,sev:'green',w:28,d:"Africa's big oil producer, where pipeline sabotage and theft cut output.",f:["Oil"]},
+  {n:"OPEC+ and Saudi Arabia",g:"Commodities and policy",lat:24.7,lng:46.7,sev:'amber',w:55,d:"Output decisions from this group often move oil more than any conflict.",f:["Oil", "Energy", "Inflation"]},
+  {n:"China export controls",g:"Commodities and policy",lat:39.9,lng:116.4,sev:'amber',w:55,d:"China dominates rare earth processing. Each new export rule hits chips, defense and EVs.",f:["Rare earths", "Chips supply", "Defense"]},
 ];
 const tags=f=>f.map(x=>`<span class="tag ${FLOW[x]||'t-blue'}">${x}</span>`).join('');
-$('spots').innerHTML=SPOTS.map((s,i)=>`<div class="spot rv" style="--d:${i*.06}s"><span class="pulse" style="background:${SEV[s.sev]};color:${SEV[s.sev]}"></span><h3>${s.n}</h3><p>${s.d}</p><div class="flows">${tags(s.f)}</div>${xBtn(spotText(s),SITE+'/#hotspots','Share','Share '+s.n+' on X')}</div>`).join('');
+const SGROUPS=['Middle East','Europe and Arctic','Asia','Americas','Africa','Commodities and policy'];
+let sg='Middle East';
+function renderSpots(){
+  $('spotFilters').innerHTML=SGROUPS.map(g=>`<button class="wf" role="tab" aria-selected="${sg===g}" data-g="${g}">${g}<b>${SPOTS.filter(x=>x.g===g).length}</b></button>`).join('');
+  $('spots').innerHTML=SPOTS.filter(x=>x.g===sg).map((s,i)=>`<div class="spot" style="animation:wirein .5s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:${i*50}ms"><span class="pulse" style="background:${SEV[s.sev]};color:${SEV[s.sev]}"></span><h3>${s.n}</h3><p>${s.d}</p><div class="flows">${tags(s.f)}</div>${xBtn(spotText(s),SITE+'/#hotspots','Share','Share '+s.n+' on X')}</div>`).join('');
+}
+$('spotFilters').addEventListener('click',e=>{const b=e.target.closest('.wf');if(!b)return;sg=b.dataset.g;renderSpots();});
+renderSpots();
 $('miniMap').innerHTML=SPOTS.slice(0,4).map(s=>`<div class="mini-row"><span>${s.n}</span><div class="bar"><i style="--w:${s.w}%;background:${SEV[s.sev]}"></i></div></div>`).join('');
 
 /* ---------- HUD cycle ---------- */
@@ -737,7 +766,7 @@ function renderMq(){
   const t=P.torch;if(t)items.push(`<div class="mq-item">${logoImg('torch','mq-logo')}<span class="k">TORCH</span><span class="v">${pfmt(t.p)}</span><span class="${t.c>=0?'up':'down'}">${t.c>=0?'+':''}${t.c.toFixed(2)}%</span></div>`);
   a('eth','ETH',2);a('btc','BTC',0);a('gold','GOLD',0);a('silver','SILVER',2);a('oil','OIL WTI',2);
   if(P.fng) items.push(`<div class="mq-item"><span class="k">Fear and Greed</span><span class="v">${P.fng.v}</span><span class="k">${P.fng.t}</span></div>`);
-  SPOTS.forEach(s=>items.push(`<div class="mq-item"><span class="sev" style="background:${SEV[s.sev]};box-shadow:0 0 8px ${SEV[s.sev]}"></span><span>${s.n}</span><span class="k">${s.f.join(' / ')}</span></div>`));
+  SPOTS.filter(s=>s.sev!=='green').forEach(s=>items.push(`<div class="mq-item"><span class="sev" style="background:${SEV[s.sev]};box-shadow:0 0 8px ${SEV[s.sev]}"></span><span>${s.n}</span><span class="k">${s.f.join(' / ')}</span></div>`));
   const html=items.join('');$('mq').innerHTML=html+html;
 }
 async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error(r.status);return r.json();}
@@ -797,7 +826,7 @@ const WTAGS=[
   ['rates','Fed and rates','t-blue',/(federal reserve|\bfed\b|interest rate|rate cut|rate hike|inflation|\bcpi\b|\becb\b|treasury yields?)/i],
   ['trade','Tariffs and sanctions','t-red',/(tariff|sanction|embargo|export ban|trade war)/i],
   ['crypto','Crypto','t-green',/(bitcoin|crypto|ethereum|\bbtc\b|stablecoin)/i],
-  ['geo','Hotspots','t-red',/(hormuz|red sea|houthi|taiwan|ukraine|iran|suez|malacca)/i]
+  ['geo','Hotspots','t-red',/(hormuz|red sea|houthi|taiwan|ukraine|iran|suez|malacca|israel|gaza|lebanon|black sea|baltic|south china sea|north korea|kashmir|venezuela|libya|congo|sahel|panama canal|greenland)/i]
 ];
 const JUNK=/(medal|golden globe|gold coast|olympic|silver screen|silverstone|cooking oil|essential oil|olive oil)/i;
 let WIRE=[],wf='all';
