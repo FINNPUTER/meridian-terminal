@@ -16,7 +16,7 @@
 <meta name="twitter:description" content="See the world move before the chart does. A live terminal that maps geopolitical risk to the assets it hits.">
 <meta name="twitter:image" content="https://meridian-gmi.com/og-image.png">
 <link rel="icon" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" as="image" href="assets/earth.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,6 +68,7 @@ main{overflow-x:clip}
 .nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:80;width:min(calc(100% - 32px),1000px);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 18px;border-radius:999px;background:rgba(8,20,32,.5);border:1px solid var(--line-strong);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);box-shadow:0 10px 40px rgba(0,0,0,.4);transition:background .3s}
 .nav.solid{background:rgba(8,20,32,.82)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-stretch:125%;letter-spacing:.2em;font-size:15px}
+.brand-logo{width:30px;height:30px;border-radius:50%;filter:drop-shadow(0 0 8px rgba(63,224,160,.45));flex:none}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--signal);box-shadow:0 0 12px var(--signal),0 0 24px rgba(63,224,160,.5);animation:breathe 2.4s ease-in-out infinite;flex:none}
 @keyframes breathe{50%{opacity:.5;box-shadow:0 0 5px var(--signal)}}
 .nav-links{display:flex;gap:2px}
@@ -404,7 +405,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
 
 <header>
   <nav class="nav" id="nav" aria-label="Main">
-    <a href="#top" class="brand"><span class="dot"></span>MERIDIAN</a>
+    <a href="#top" class="brand"><img class="brand-logo" src="assets/logo.png" alt="" width="30" height="30">MERIDIAN</a>
     <div class="nav-links">
       <a href="#wire">Markets</a>
       <a href="#hotspots">Hotspots</a>
@@ -667,7 +668,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
 <footer>
   <div class="wrap">
     <div class="foot">
-      <a href="#top" class="brand"><span class="dot"></span>MERIDIAN</a>
+      <a href="#top" class="brand"><img class="brand-logo" src="assets/logo.png" alt="" width="30" height="30">MERIDIAN</a>
       <div class="foot-links" id="footLinks">
         <a href="terminal/">Terminal</a>
         <a href="#token">Token</a>
