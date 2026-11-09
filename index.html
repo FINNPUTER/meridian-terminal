@@ -280,6 +280,35 @@ section{position:relative;padding:clamp(90px,12vw,170px) 0}
 .chip{font-size:13px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-strong);color:var(--muted)}
 @media (max-width:980px){.c-4,.c-3,.c-2{grid-column:span 6}}
 
+/* signals */
+.sig-top{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:16px}
+.sig-top>*{min-width:0}
+.regime{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:24px;border-radius:22px;border:1px solid var(--line-strong);background:radial-gradient(400px circle at 0% 0%,rgba(63,224,160,.14),transparent 60%),var(--deep)}
+.regime>span:nth-child(2){color:var(--muted);font-size:14px}
+.regime b{font-size:clamp(34px,4vw,52px);font-weight:800;font-stretch:72%;line-height:1}
+.regime .mono{color:var(--muted);font-size:13px}
+.regime.r-RISK_OFF b{color:var(--red)}.regime.r-ELEVATED b{color:var(--amber)}.regime.r-NEUTRAL b{color:var(--text)}.regime.r-RISK_ON b{color:var(--signal)}
+.sig-stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:22px;overflow:hidden;background:rgba(11,28,42,.7)}
+.sstat{padding:24px 20px;border-right:1px solid var(--line)}
+.sstat:last-child{border-right:0}
+.sstat-v{font-size:clamp(34px,3.6vw,52px);font-weight:800;font-stretch:72%;line-height:1}
+.sstat-v small{font-size:.4em;color:var(--signal);margin-left:4px}
+.sstat-k{color:var(--muted);font-size:13.5px;margin-top:8px}
+.sig-list{list-style:none;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(13,30,46,.75),rgba(7,19,32,.75))}
+.sig{display:grid;grid-template-columns:110px 1fr auto;gap:6px 20px;padding:20px 24px;border-top:1px solid var(--line)}
+.sig:first-child{border-top:0}
+.sig-type{align-self:start;justify-self:start;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid currentColor}
+.ty-regime{color:var(--red)}.ty-spike{color:var(--amber)}.ty-setup{color:var(--signal)}.ty-move{color:var(--blue)}
+.sig h3{font-size:18px;font-weight:700;font-stretch:90%;margin-bottom:4px}
+.sig p{color:var(--muted);font-size:15px}
+.sig-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.res{padding:3px 9px;border-radius:7px;border:1px solid var(--line-strong)}
+.res.hit{color:var(--signal);border-color:rgba(63,224,160,.5);background:var(--signal-dim)}
+.res.miss{color:var(--red);border-color:rgba(255,93,93,.45)}
+.sig-empty{padding:26px 24px;color:var(--muted)}
+.sig-note{margin-top:14px;color:var(--muted);font-size:13.5px}
+@media (max-width:900px){.sig-top{grid-template-columns:1fr}.sig-stats{grid-template-columns:1fr 1fr}.sstat:nth-child(2n){border-right:0}.sstat{border-bottom:1px solid var(--line)}.sig{grid-template-columns:1fr}.sig-side{align-items:flex-start;flex-direction:row;flex-wrap:wrap}}
+
 /* token */
 .token{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,80px);align-items:center}
 .token>*{min-width:0}
@@ -380,6 +409,7 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
       <a href="#wire">Markets</a>
       <a href="#hotspots">Hotspots</a>
       <a href="#terminal">Terminal</a>
+      <a href="#signals">Signals</a>
       <a href="#token">Token</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -548,6 +578,27 @@ footer{position:relative;border-top:1px solid var(--line);padding:36px 0 48px;co
           <div class="chips"><span class="chip">NYSE</span><span class="chip">LSE</span><span class="chip">XETRA</span><span class="chip">DFM</span><span class="chip">SGX</span></div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- SIGNALS -->
+  <section id="signals" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="split">Signals, with receipts.</h2>
+        <p class="rv">Every signal the engine fires is logged with a timestamp and the prices at that moment, then scored automatically after 24 hours and 7 days. Nothing gets edited or deleted. Holders see signals live, everyone else 30 minutes later.</p>
+      </div>
+      <div class="sig-top rv">
+        <div class="regime" id="sgRegime"><span class="dot"></span><span>Current regime</span><b id="sgRegimeLbl">Loading</b><span class="mono" id="sgComp"></span></div>
+        <div class="sig-stats">
+          <div class="sstat"><div class="sstat-v" id="sgTotal">0</div><div class="sstat-k">Signals fired</div></div>
+          <div class="sstat"><div class="sstat-v" id="sgH24">n/a</div><div class="sstat-k">Hit rate after 24h</div></div>
+          <div class="sstat"><div class="sstat-v" id="sgD7">n/a</div><div class="sstat-k">Hit rate after 7 days</div></div>
+          <div class="sstat"><div class="sstat-v">30<small>min</small></div><div class="sstat-k">Public delay</div></div>
+        </div>
+      </div>
+      <ol class="sig-list rv" id="sgList"><li class="sig-empty">Loading the signal log</li></ol>
+      <p class="sig-note rv" id="sgNote"></p>
     </div>
   </section>
 
@@ -834,6 +885,33 @@ function renderQuotes(){
   });
 }
 renderMq();prices();setInterval(prices,60000);
+
+/* ---------- signal track record ---------- */
+const TYPE_LBL={regime:'Regime',spike:'Hotspot',setup:'Setup',move:'Move'};
+function sAgo(iso){const d=(Date.now()-Date.parse(iso))/60000;return d<60?Math.round(d)+'m ago':d<1440?Math.round(d/60)+'h ago':Math.round(d/1440)+'d ago';}
+function resChip(lbl,e,due){
+  if(!e)return `<span class="res">${lbl} pending</span>`;
+  if(e.info)return '';
+  return `<span class="res ${e.hit?'hit':'miss'}">${lbl} ${e.ret>=0?'+':''}${e.ret}% ${e.hit?'✓':'✗'}</span>`;
+}
+async function loadSignals(){
+  try{
+    const [st,sg]=await Promise.all([getJSON(PROXY+'/signals/stats'),getJSON(PROXY+'/signals?limit=8')]);
+    const rg=$('sgRegime');rg.className='regime r-'+(st.regime||'NEUTRAL');
+    $('sgRegimeLbl').textContent=st.regimeLabel||'Warming up';
+    $('sgComp').textContent=st.composite!=null?'Composite geo risk '+st.composite+' / 100':'First scan in progress';
+    $('sgTotal').textContent=st.total;
+    $('sgH24').innerHTML=st.h24.rate!=null?st.h24.rate+'<small>%</small>':'n/a';
+    $('sgD7').innerHTML=st.d7.rate!=null?st.d7.rate+'<small>%</small>':'n/a';
+    const started=new Date(st.started).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    $('sgList').innerHTML=sg.signals.length?sg.signals.map(s=>`<li class="sig"><span class="sig-type ty-${s.type}">${TYPE_LBL[s.type]||s.type}</span><div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></div><div class="sig-side"><span>${sAgo(s.t)}</span>${(s.type==='setup'||s.type==='regime')?resChip('24h',s.eval&&s.eval.h24)+resChip('7d',s.eval&&s.eval.d7):'<span class="res">Context</span>'}</div></li>`).join(''):`<li class="sig-empty">The engine has been live since ${started}. Signals show up here 30 minutes after they fire${sg.pending?`, and ${sg.pending} ${sg.pending===1?'is':'are'} on the way right now`:''}.</li>`;
+    $('sgNote').textContent=`Engine live since ${started}. Setups count as a hit when the asset moved in the called direction. Regime shifts count as a hit when gold beat bitcoin after a shift to risk-off or elevated, and the other way round after a shift to risk-on. Hotspot spikes and moves are context and are not scored.`;
+  }catch(e){
+    $('sgList').innerHTML='<li class="sig-empty">The signal log is reconnecting. The live regime also shows in the terminal.</li>';
+    if($('sgRegimeLbl').textContent==='Loading')$('sgRegimeLbl').textContent='Reconnecting';
+  }
+}
+loadSignals();setInterval(loadSignals,120000);
 
 /* ---------- market wire ---------- */
 const WTAGS=[

@@ -1712,7 +1712,9 @@ async function computeGeoRisks(){
     HOTSPOTS=newHotspots;
     if(newChokepoints.length>=3) CHOKEPOINTS=newChokepoints;
 
-    _compositeRisk=riskCount?Math.round(totalRisk/riskCount):0;
+    // Composite = average of the 8 hottest regions (same rule as the server engine)
+    const _top=Object.values(_geoScores).sort((a,b)=>b-a).slice(0,8);
+    _compositeRisk=_top.length?Math.round(_top.reduce((a,b)=>a+b,0)/_top.length):0;
 
     // Re-render all geo panels
     rebuildImpact();rebuildGeo();rebuildSupply();updateCompositeDisplay();
@@ -2461,7 +2463,7 @@ const REGIME_BIAS = {
 };
 
 function getGeoRegime(){
-  const score = _compositeRisk || 0;
+  const score = (typeof window._serverComposite==='number') ? window._serverComposite : (_compositeRisk || 0);
   if(score >= 60) return 'RISK_OFF';
   if(score >= 40) return 'ELEVATED';
   if(score >= 20) return 'NEUTRAL';
@@ -2737,6 +2739,40 @@ loadTorch();setInterval(loadTorch,60000);
   nav.addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(+b.dataset.c);});
   show(1);
 })();
+
+/* ── Server signal feed (public, 30 min delay) ── */
+const SIG_LBL={regime:'REGIME',spike:'HOTSPOT',setup:'SETUP',move:'MOVE'};
+const SIG_COL={regime:'var(--R)',spike:'var(--A)',setup:'var(--G)',move:'var(--B)'};
+function sigAgo(iso){const d=(Date.now()-Date.parse(iso))/60000;return d<60?Math.round(d)+'m':d<1440?Math.round(d/60)+'h':Math.round(d/1440)+'d';}
+async function loadSignalFeed(){
+  const box=document.getElementById('sigfeed');if(!box)return;
+  try{
+    const [st,sg]=await Promise.all([
+      fetch(PROXY_URL+'/signals/stats',{signal:AbortSignal.timeout(12000)}).then(r=>r.json()),
+      fetch(PROXY_URL+'/signals?limit=6',{signal:AbortSignal.timeout(12000)}).then(r=>r.json())
+    ]);
+    if(typeof st.composite==='number'){window._serverComposite=st.composite;if(typeof runGeoTactical==='function'&&document.getElementById('gtac-regime'))runGeoTactical();}
+    const rc={RISK_OFF:'var(--R)',ELEVATED:'var(--A)',NEUTRAL:'var(--t)',RISK_ON:'var(--G)'}[st.regime]||'var(--t)';
+    const rate=(x)=>x.rate!=null?x.rate+'%':'n/a';
+    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px">
+      <div><div class="lbl">Engine regime</div><div style="font-family:var(--disp);font-size:22px;font-weight:800;color:${rc}">${st.regimeLabel||'Warming up'}</div></div>
+      <div style="text-align:right" class="mono"><div style="font-size:10px;color:var(--d)">Composite ${st.composite??'n/a'} · ${st.total} signals</div><div style="font-size:10px;color:var(--d)">Hit rate 24h ${rate(st.h24)} · 7d ${rate(st.d7)}</div></div></div>`+
+      (sg.signals.length?sg.signals.map(x=>`<div style="padding:8px 0;border-top:1px solid var(--b0)"><div style="display:flex;justify-content:space-between;gap:8px"><span class="mono" style="font-size:9.5px;color:${SIG_COL[x.type]};border:1px solid currentColor;border-radius:5px;padding:0 6px">${SIG_LBL[x.type]||x.type}</span><span class="mono" style="font-size:9.5px;color:var(--d)">${sigAgo(x.t)} ago</span></div><div style="font-size:12.5px;font-weight:600;color:var(--w);margin:4px 0 2px">${wEsc(x.title)}</div><div style="font-size:11.5px;color:var(--m);line-height:1.45">${wEsc(x.body)}</div></div>`).join('')
+      :`<div class="mono" style="font-size:10.5px;color:var(--d);padding:8px 0;border-top:1px solid var(--b0)">No public signals yet. They appear here 30 minutes after they fire${sg.pending?' ('+sg.pending+' on the way)':''}.</div>`)+
+      `<div class="mono" style="font-size:9.5px;color:var(--d);margin-top:6px">Public feed is delayed 30 min. Holders get it live. Full track record on <a href="../#signals" style="color:var(--G)">meridian-gmi.com</a>.</div>`;
+  }catch(e){box.innerHTML='<div class="mono" style="font-size:10.5px;color:var(--d)">Signal feed reconnecting.</div>';}
+}
+let _sigStarted=false;
+const _sigTry=setInterval(()=>{
+  const sp=document.getElementById('tp-signals');
+  if(!_sigStarted){_sigStarted=true;loadSignalFeed();setInterval(loadSignalFeed,120000);}
+  if(!sp||document.getElementById('sigfeed-wrap'))return;
+  const w=document.createElement('div');w.id='sigfeed-wrap';
+  w.style.cssText='background:var(--bg2);border:1px solid var(--b1);border-radius:12px;padding:10px 12px;margin-bottom:8px';
+  w.innerHTML='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><div class="dot dot4 dotlive" style="background:var(--G)"></div><span style="font-family:var(--disp);font-weight:700;font-size:14px;color:var(--w)">Meridian signal feed</span></div><div id="sigfeed"><div class="spin"></div></div>';
+  sp.insertBefore(w,sp.firstChild);
+  loadSignalFeed();
+},1500);
 </script>
 </body>
 </html>
